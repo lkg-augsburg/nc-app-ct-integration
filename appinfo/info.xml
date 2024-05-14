@@ -7,9 +7,9 @@
     -->
     <id>churchtoolsintegration</id>
     <name>Church Tools Integration</name>
-    <summary>Integrating ChurchTools with Nextcloud</summary>
+    <summary>ChurchTools integration for Nextcloud</summary>
     <description><![CDATA[A collection of tools to integrate ChurchTools like providing folders for ChurchTools groups, automatic folders for events, Sync groups between ChurchTools and NextCloud including assigned members,…]]></description>
-    <version>0.0.1</version>
+    <version>0.0.1.1</version>
     <licence>agpl</licence>
     <author mail="soeren.liebich@gmail.com" homepage="https://github.com/lkg-augsburg/lkg-augsburg">Sören Liebich</author>
     <namespace>ChurchToolsIntegration</namespace>

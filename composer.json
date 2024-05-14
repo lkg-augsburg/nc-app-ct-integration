@@ -1,0 +1,36 @@
+{
+    "name": "lkg-augsburg/churchtoolsintegration",
+    "description": "ChurchTools integration for Nextcloud",
+    "type": "library",
+    "require": {
+        "bamarni/composer-bin-plugin": "^1.8",
+        "php": "^8.1"
+    },
+    "require-dev": {
+        "nextcloud/ocp": "dev-stable29",
+        "roave/security-advisories": "dev-latest"
+    },
+    "license": "APGL-3.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "OCA\\ChurchToolsIntegration\\": "lib/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Søren Liebich",
+            "email": "soeren.Liebich@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "config": {
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
+        },
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "platform": {
+            "php": "8.1"
+        }
+    }
+}
