@@ -39,6 +39,11 @@ return [
 			'name' => 'church_tools_client#fetch__who_am_i',
 			'url' => '/api/whoami',
 			'verb' => 'GET',
+		],
+		[
+			'name' => 'church_tools_client#save_ct_credentials',
+			'url' => '/api/ct-credentials',
+			'verb' => 'POST',
 		]
 	]
 ];

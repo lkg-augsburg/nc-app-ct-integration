@@ -3,24 +3,24 @@ namespace OCA\ChurchToolsIntegration\Settings;
 
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\IConfig;
 use OCP\Settings\ISettings;
 
 use OCA\ChurchToolsIntegration\AppInfo\Application;
+use OCP\AppFramework\Services\IAppConfig;
 
 class Admin implements ISettings
 {
 
-  private IConfig $config;
+  private IAppConfig $appConfig;
   private IInitialState $initialStateService;
   private ?string $userId;
 
   public function __construct(
-    IConfig $config,
+    IAppConfig $appConfig,
     IInitialState $initialStateService,
     ?string $userId
   ) {
-    $this->config = $config;
+    $this->appConfig = $appConfig;
     $this->initialStateService = $initialStateService;
     $this->userId = $userId;
   }
@@ -30,15 +30,13 @@ class Admin implements ISettings
    */
   public function getForm(): TemplateResponse
   {
-    // $ctUser = $this->config->getAppValue(Application::APP_ID, 'churchToolsUser');
-    // $ctPw = $this->config->getAppValue(Application::APP_ID, 'churchToolsPassword');
+    $ctUrl = $this->appConfig->getAppValueString('ctUrl');
+    $ctToken = $this->appConfig->getAppValueString('ctUserToken');
 
     $state = [
-      'ctUrl' => '',
-      'ctUser' => '',
-      'ctPw' => '',
+      'ctUrl' => $ctUrl,
+      'ctToken' => $ctToken,
     ];
-    // $this->initialStateService->provideInitialState('admin-config', $state);
     $this->initialStateService->provideInitialState('ct-connection', $state);
     return new TemplateResponse(Application::APP_ID, 'adminSettings');
   }

@@ -6,5 +6,5 @@
 /.php_cs.cache
 /build/
 /vendor/
-js/*
+js/
 node_modules/

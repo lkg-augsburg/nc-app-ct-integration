@@ -6,31 +6,23 @@ use OCA\ChurchToolsIntegration\Service\CtRestClient;
 use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\AppFramework\Http\DataResponse;
-use OCP\Http\Client\IClientService;
-use OCP\Http\Client\IClient;
+use OCP\AppFramework\Services\IAppConfig;
 
 class ChurchToolsClientController extends Controller
 {
-  private $clientService;
+  private $appConfig;
   private $ctRestClient;
 
-  public function __construct($AppName, IRequest $request, IClientService $clientService, CtRestClient $ctRestClient)
-  {
+  public function __construct(
+    $AppName,
+    IRequest $request,
+    IAppConfig $appConfig,
+    CtRestClient $ctRestClient,
+  ) {
     parent::__construct($AppName, $request);
-    $this->clientService = $clientService;
+    // $this->clientService = $clientService;
     $this->ctRestClient = $ctRestClient;
-  }
-
-  public function test()
-  {
-    return new JSONResponse(
-      array(
-        'status' => 'ok',
-        'data' => null,
-        'message' => 'Test succeeded!'
-      )
-    );
+    $this->appConfig = $appConfig;
   }
 
   public function fetchCsrfToken($url, $token)
@@ -41,5 +33,25 @@ class ChurchToolsClientController extends Controller
   public function fetchWhoAmI($url, $token)
   {
     return $this->ctRestClient->fetchWhoAmI($url, $token);
+  }
+
+  public function saveCtCredentials($url, $token)
+  {
+    $whoami = $this->fetchWhoAmI($url, $token)->getData()['data'];
+    $mail = $whoami['email'];
+
+    $fields = [
+      ["key" => "ctUrl", "value" => $url],
+      ["key" => "ctUserMail", "value" => $mail],
+      ["key" => "ctUserToken", "value" => $token],
+    ];
+
+    $results = [];
+
+    foreach ($fields as $field) {
+      $this->appConfig->setAppValueString($field["key"], $field["value"], sensitive: true);
+    }
+
+    return new JSONResponse($results);
   }
 }

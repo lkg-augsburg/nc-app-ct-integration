@@ -1,24 +1,32 @@
 <template>
 <ConfigSection title="Connection">
   <InputField id="ctUrl"
+    v-model="state.ctUrl"
     placeholder="ChurchTools URL"
-    label="ChurchTools URL"
-    :value="state.ctUrl" />
-  <InputField id="ctUser"
+    label="ChurchTools URL" />
+  <!-- <InputField id="ctUser"
     placeholder="ChurchTools User Name"
     label="ChurchTools User Name"
-    :value="state.ctUser" />
-  <InputField id="ctPw"
+    :value="state.ctUser" /> -->
+  <InputField id="ctToken"
+    v-model="state.ctToken"
     placeholder="ChurchTools Password / Token"
     label="ChurchTools Password / Token"
-    :value="state.ctPw"
     field-type="password" />
-  <div>
-    <NcButton :wide="true" @click="testLogin">
+  <div class="flex">
+    <NcButton :wide="false" @click="testLogin">
       <template #icon>
         <ConnectionIcon :size="20" />
       </template>
       Test Connection
+    </NcButton>
+    <NcButton :wide="false"
+      :disabled="isConnectionTested === false && connectionOk === false"
+      @click="saveCredentials">
+      <template #icon>
+        <ContentSaveIcon :size="20" />
+      </template>
+      Save credentials
     </NcButton>
   </div>
   <template v-if="isConnectionTested === true && connectionOk !== true">
@@ -62,6 +70,7 @@ import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
 import NcNoteCard from '@nextcloud/vue/dist/Components/NcNoteCard.js'
 import ConnectionIcon from 'vue-material-design-icons/Connection.vue'
 import OpenInNewIcon from 'vue-material-design-icons/OpenInNew.vue'
+import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
 import ConfigSection from './ConfigSection.vue'
 import InputField from './InputField.vue'
 
@@ -80,6 +89,7 @@ export default {
     NcNoteCard,
     ConnectionIcon,
     OpenInNewIcon,
+    ContentSaveIcon,
   },
   data: () => ({
     title: 'Connection',
@@ -90,6 +100,13 @@ export default {
     error: null,
   }),
   methods: {
+    async saveCredentials() {
+      await axios.post('ct-credentials', {
+        url: this.state.ctUrl,
+        token: this.state.ctToken,
+      })
+
+    },
     async testLogin() {
       this.isConnectionTested = false
 
@@ -97,7 +114,7 @@ export default {
         const whoAmIResp = await axios.get('whoami', {
           params: {
             url: this.state.ctUrl,
-            token: this.state.ctPw,
+            token: this.state.ctToken,
           },
         })
 
