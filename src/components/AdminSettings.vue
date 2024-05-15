@@ -1,32 +1,32 @@
 <template>
-	<div id="pexels_prefs" class="section">
-		<h2>
-			<PexelsIcon class="icon" />
-			{{ t('pexels', 'Pexels integration') }}
-		</h2>
-		<div id="pexels-content">
-			<div class="line">
-				<label for="pexels-api-key">
-					<KeyIcon :size="20" class="icon" />
-					{{ t('pexels', 'Pexels API key') }}
-				</label>
-				<input id="pexels-api-key"
-					v-model="state.api_key"
-					type="password"
-					:placeholder="t('pexels', '...')"
-					@input="inputChanged = true">
-				<NcButton v-if="inputChanged"
-					type="primary"
-					@click="onSave">
-					<template #icon>
-						<NcLoadingIcon v-if="loading" />
-						<ArrowRightIcon v-else />
-					</template>
-					{{ t('pexels', 'Save') }}
-				</NcButton>
-			</div>
-		</div>
-	</div>
+<div id="pexels_prefs" class="section">
+  <h2>
+    <PexelsIcon class="icon" />
+    {{ t('pexels', 'Pexels integration') }}
+  </h2>
+  <div id="pexels-content">
+    <div class="line">
+      <label for="pexels-api-key">
+        <KeyIcon :size="20" class="icon" />
+        {{ t('pexels', 'Pexels API key') }}
+      </label>
+      <input id="pexels-api-key"
+        v-model="state.api_key"
+        type="password"
+        :placeholder="t('pexels', '...')"
+        @input="inputChanged = true">
+      <NcButton v-if="inputChanged"
+        type="primary"
+        @click="onSave">
+        <template #icon>
+          <NcLoadingIcon v-if="loading" />
+          <ArrowRightIcon v-else />
+        </template>
+        {{ t('pexels', 'Save') }}
+      </NcButton>
+    </div>
+  </div>
+</div>
 </template>
 
 <script>
@@ -43,61 +43,61 @@ import axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
 
 export default {
-	name: 'AdminSettings',
+  name: 'AdminSettings',
 
-	components: {
-		PexelsIcon,
-		KeyIcon,
-		NcButton,
-		NcLoadingIcon,
-		ArrowRightIcon,
-	},
+  components: {
+    PexelsIcon,
+    KeyIcon,
+    NcButton,
+    NcLoadingIcon,
+    ArrowRightIcon,
+  },
 
-	props: [],
+  props: [],
 
-	data() {
-		return {
-			state: loadState('churchtoolsintegration', 'admin-config'),
-			loading: false,
-			inputChanged: false,
-		}
-	},
+  data() {
+    return {
+      state: loadState('churchtoolsintegration', 'admin-config'),
+      loading: false,
+      inputChanged: false,
+    }
+  },
 
-	computed: {
-	},
+  computed: {
+  },
 
-	watch: {
-	},
+  watch: {
+  },
 
-	mounted() {
-	},
+  mounted() {
+  },
 
-	methods: {
-		onSave() {
-			this.saveOptions({
-				api_key: this.state.api_key,
-			})
-		},
-		saveOptions(values) {
-			this.loading = true
-			const req = {
-				values,
-			}
-			const url = generateUrl('/apps/pexels/admin-config')
-			axios.put(url, req).then((response) => {
-				showSuccess(t('pexels', 'Pexels options saved'))
-				this.inputChanged = false
-			}).catch((error) => {
-				showError(
-					t('pexels', 'Failed to save Pexels options')
+  methods: {
+    onSave() {
+      this.saveOptions({
+        api_key: this.state.api_key,
+      })
+    },
+    saveOptions(values) {
+      this.loading = true
+      const req = {
+        values,
+      }
+      const url = generateUrl('/apps/pexels/admin-config')
+      axios.put(url, req).then((response) => {
+        showSuccess(t('pexels', 'Pexels options saved'))
+        this.inputChanged = false
+      }).catch((error) => {
+        showError(
+          t('pexels', 'Failed to save Pexels options')
 					+ ': ' + (error.response?.data?.error ?? ''),
-				)
-				console.error(error)
-			}).then(() => {
-				this.loading = false
-			})
-		},
-	},
+        )
+        console.error(error)
+      }).then(() => {
+        this.loading = false
+      })
+    },
+  },
 }
 </script>
 

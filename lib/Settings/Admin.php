@@ -30,14 +30,16 @@ class Admin implements ISettings
    */
   public function getForm(): TemplateResponse
   {
-    $ctUser = $this->config->getAppValue(Application::APP_ID, 'churchToolsUser');
-    $ctPw = $this->config->getAppValue(Application::APP_ID, 'churchToolsPassword');
+    // $ctUser = $this->config->getAppValue(Application::APP_ID, 'churchToolsUser');
+    // $ctPw = $this->config->getAppValue(Application::APP_ID, 'churchToolsPassword');
 
     $state = [
-      'ctUser' => $ctUser,
-      'ctPw' => $ctPw,
+      'ctUrl' => '',
+      'ctUser' => '',
+      'ctPw' => '',
     ];
-    $this->initialStateService->provideInitialState('admin-config', $state);
+    // $this->initialStateService->provideInitialState('admin-config', $state);
+    $this->initialStateService->provideInitialState('ct-connection', $state);
     return new TemplateResponse(Application::APP_ID, 'adminSettings');
   }
 
