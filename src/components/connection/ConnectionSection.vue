@@ -4,10 +4,6 @@
     v-model="state.ctUrl"
     placeholder="ChurchTools URL"
     label="ChurchTools URL" />
-  <!-- <InputField id="ctUser"
-    placeholder="ChurchTools User Name"
-    label="ChurchTools User Name"
-    :value="state.ctUser" /> -->
   <InputField id="ctToken"
     v-model="state.ctToken"
     placeholder="ChurchTools Password / Token"
@@ -71,8 +67,8 @@ import NcNoteCard from '@nextcloud/vue/dist/Components/NcNoteCard.js'
 import ConnectionIcon from 'vue-material-design-icons/Connection.vue'
 import OpenInNewIcon from 'vue-material-design-icons/OpenInNew.vue'
 import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
-import ConfigSection from './ConfigSection.vue'
-import InputField from './InputField.vue'
+import ConfigSection from '../forms/ConfigSection.vue'
+import InputField from '../forms/InputField.vue'
 
 activateLogging()
 churchtoolsClient.setBaseUrl('https://lkg-augsburg.church.tools')

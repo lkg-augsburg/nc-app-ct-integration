@@ -16,7 +16,6 @@ webpackConfig.stats = {
 
 const appId = 'churchtoolsintegration'
 webpackConfig.entry = {
-  // reference: { import: path.join(__dirname, 'src', 'reference.js'), filename: appId + '-reference.js' },
   adminSettings: { import: path.join(__dirname, 'src', 'adminSettings.js'), filename: appId + '-adminSettings.js' },
 }
 
@@ -32,8 +31,7 @@ webpackConfig.plugins.push(
     failOnError: !isDev,
   }),
 )
-// const autoprefixer = require('autoprefixer')
-// const tailwindcss = require('tailwindcss')
+
 webpackConfig.module.rules.push({
   test: /\.css$/i,
   use: [

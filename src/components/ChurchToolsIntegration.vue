@@ -8,10 +8,10 @@
 </template>
 
 <script>
-import ConnectionSection from './ConnectionSection.vue'
+import ConnectionSection from './connection/ConnectionSection.vue'
 
 export default {
-  name: 'CtLogin',
+  name: 'ChurchToolsIntegration',
 
   components: {
     ConnectionSection,
