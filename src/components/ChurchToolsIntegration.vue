@@ -4,17 +4,20 @@
     {{ t('ctIntegration', 'ChurchTools Integration') }}
   </h2>
   <ConnectionSection />
+  <CtGroupsSection />
 </div>
 </template>
 
 <script>
 import ConnectionSection from './connection/ConnectionSection.vue'
+import CtGroupsSection from './ctGroups/CtGroupsSection.vue'
 
 export default {
   name: 'ChurchToolsIntegration',
 
   components: {
     ConnectionSection,
+    CtGroupsSection,
   },
 
   props: [],

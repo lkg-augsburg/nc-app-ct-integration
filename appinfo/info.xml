@@ -20,7 +20,7 @@
         <nextcloud min-version="28" max-version="28"/>
     </dependencies>
     <settings>
-    <admin>OCA\ChurchToolsIntegration\Settings\Admin</admin>
-    <admin-section>OCA\ChurchToolsIntegration\Settings\AdminSection</admin-section>
-</settings>
+        <admin>OCA\ChurchToolsIntegration\Settings\Admin</admin>
+        <admin-section>OCA\ChurchToolsIntegration\Settings\AdminSection</admin-section>
+    </settings>
 </info>

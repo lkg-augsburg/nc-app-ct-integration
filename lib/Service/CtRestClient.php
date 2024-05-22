@@ -4,7 +4,6 @@ namespace OCA\ChurchToolsIntegration\Service;
 
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\Http\Client\IClientService;
-use OCP\Http\Client\IClient;
 
 class CtRestClient
 {
@@ -20,30 +19,46 @@ class CtRestClient
 
   public function fetchCsrfToken($url, $token)
   {
-    $client = $this->clientService->newClient();
     $url = $url . '/api/csrftoken';
-    $headers = [
-      'Accept' => 'application/json',
-      'Authorization' => 'Login ' . $token
-    ];
-    // $response = $client->get($url, [
-    //   'headers' => [
-    //     'Accept' => 'application/json',
-    //     'Authorization' => 'Login ' . $token
-    //   ],
-    // ]);
-
-    // return new JSONResponse(json_decode($response->getBody(), true));
-    return new JSONResponse([
-      'url' => $url,
-      'headers' => $headers,
+    $response = $this->client->get($url, [
+      'headers' => [
+        'Accept' => 'application/json',
+        'Authorization' => 'Login ' . $token
+      ],
     ]);
+
+    return new JSONResponse(json_decode($response->getBody(), true));
   }
 
   public function fetchWhoAmI($url, $token)
   {
-    // $client = $this->clientService->newClient();
     $url = $url . '/api/whoami?only_allow_authenticated=true';
+    $response = $this->client->get($url, [
+      'headers' => [
+        'Accept' => 'application/json',
+        'Authorization' => 'Login ' . $token
+      ],
+    ]);
+
+    return new JSONResponse(json_decode($response->getBody(), true));
+  }
+
+  public function fetchTags($url, $token)
+  {
+    $url = $url . '/api/tags?type=persons';
+    $response = $this->client->get($url, [
+      'headers' => [
+        'Accept' => 'application/json',
+        'Authorization' => 'Login ' . $token
+      ],
+    ]);
+
+    return new JSONResponse(json_decode($response->getBody(), true));
+  }
+
+  public function fetchGroupTypes($url, $token)
+  {
+    $url = $url . '/api/group/grouptypes';
     $response = $this->client->get($url, [
       'headers' => [
         'Accept' => 'application/json',

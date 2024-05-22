@@ -18,7 +18,7 @@ class Admin implements ISettings
   public function __construct(
     IAppConfig $appConfig,
     IInitialState $initialStateService,
-    ?string $userId
+    ?string $userId,
   ) {
     $this->appConfig = $appConfig;
     $this->initialStateService = $initialStateService;
@@ -30,20 +30,19 @@ class Admin implements ISettings
    */
   public function getForm(): TemplateResponse
   {
-    $ctUrl = $this->appConfig->getAppValueString('ctUrl');
-    $ctToken = $this->appConfig->getAppValueString('ctUserToken');
-
-    $state = [
-      'ctUrl' => $ctUrl,
-      'ctToken' => $ctToken,
-    ];
-    $this->initialStateService->provideInitialState('ct-connection', $state);
+    $this->initialStateService->provideInitialState('configuration', [
+      'ctUrl' => $this->appConfig->getAppValueString('ctUrl'),
+      'ctToken' => $this->appConfig->getAppValueString('ctUserToken'),
+      'ctUserMail' => $this->appConfig->getAppValueString('ctUserMail'),
+      'ctGroupSyncTag' => json_decode($this->appConfig->getAppValueString('ctGroupSyncTag')),
+      'ctGroupSyncTypes' => $this->appConfig->getAppValueArray('ctGroupSyncTypes'),
+    ]);
     return new TemplateResponse(Application::APP_ID, 'adminSettings');
   }
 
   public function getSection(): string
   {
-    return 'ct-integration';
+    return 'churchtools';
   }
 
   public function getPriority(): int

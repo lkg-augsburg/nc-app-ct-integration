@@ -41,8 +41,18 @@ return [
 			'verb' => 'GET',
 		],
 		[
-			'name' => 'church_tools_client#save_ct_credentials',
-			'url' => '/api/ct-credentials',
+			'name' => 'church_tools_client#fetch_tags',
+			'url' => '/api/ct-tags',
+			'verb' => 'GET',
+		],
+		[
+			'name' => 'church_tools_client#fetch_group_types',
+			'url' => '/api/ct-group-types',
+			'verb' => 'GET',
+		],
+		[
+			'name' => 'church_tools_client#save_configuration',
+			'url' => '/api/save-config',
 			'verb' => 'POST',
 		]
 	]

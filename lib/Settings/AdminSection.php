@@ -26,7 +26,7 @@ class AdminSection implements IIconSection
    */
   public function getID(): string
   {
-    return 'ct-integration'; //or a generic id if feasible
+    return 'churchtools'; //or a generic id if feasible
   }
 
   /**

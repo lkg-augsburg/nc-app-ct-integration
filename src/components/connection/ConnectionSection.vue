@@ -1,11 +1,11 @@
 <template>
-<ConfigSection title="Connection">
+<ConfigSection title="ChurchTools Connection">
   <InputField id="ctUrl"
-    v-model="state.ctUrl"
+    v-model="ctUrl"
     placeholder="ChurchTools URL"
     label="ChurchTools URL" />
   <InputField id="ctToken"
-    v-model="state.ctToken"
+    v-model="ctToken"
     placeholder="ChurchTools Password / Token"
     label="ChurchTools Password / Token"
     field-type="password" />
@@ -25,22 +25,23 @@
       Save credentials
     </NcButton>
   </div>
-  <ConnectionErrorCard v-if="(isConnectionTested === true || credentialsSaved === true) && error !== null"
+  <ConnectionErrorCard v-if="error !== null"
     :status="error.status"
     :status-text="error.statusText"
     :message="error.message"
     :err-html="error.errHtml" />
   <ConnectionSuccessCard v-if="isConnectionTested === true && error === null"
     :id="whoami.id"
-    :url="state.ctUrl"
+    :url="ctUrl"
     :email="whoami.email"
     :user="whoami.cmsUserId" />
-  <CredentialsSaveSuccessCard v-if="credentialsSaved === true && error === null"
+  <SuccessCard v-if="credentialsSaved === true && error === null"
     text="ChurchTools credentials successfully saved." />
 </ConfigSection>
 </template>
 <script>
-import { loadState } from '@nextcloud/initial-state'
+import { mapWritableState } from 'pinia'
+// import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
 import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
@@ -50,7 +51,8 @@ import ConfigSection from '../forms/ConfigSection.vue'
 import InputField from '../forms/InputField.vue'
 import ConnectionErrorCard from './ConnectionErrorCard.vue'
 import ConnectionSuccessCard from './ConnectionSuccessCard.vue'
-import CredentialsSaveSuccessCard from './CredentialsSaveSuccessCard.vue'
+import SuccessCard from '../cards/SuccessCard.vue'
+import { useConfigurationStore } from '../../store/useConfigurationStore.js'
 
 axios.defaults.baseURL = generateUrl('/apps/churchtoolsintegration/api')
 
@@ -60,7 +62,7 @@ export default {
     ConfigSection,
     ConnectionErrorCard,
     ConnectionSuccessCard,
-    CredentialsSaveSuccessCard,
+    SuccessCard,
     InputField,
     NcButton,
     ConnectionIcon,
@@ -68,22 +70,39 @@ export default {
   },
   data: () => ({
     title: 'Connection',
-    state: loadState('churchtoolsintegration', 'ct-connection'),
+    // state: loadState('churchtoolsintegration', 'ct-connection'),
     whoami: null,
     isConnectionTested: false,
     error: null,
     credentialsSaved: false,
   }),
+  computed: {
+    ...mapWritableState(
+      useConfigurationStore,
+      [
+        'ctToken',
+        'ctUrl',
+        'connectionOk',
+        'connectionSaved',
+      ]),
+  },
   methods: {
-    async saveCredentials() {
+    resetMessagePanels() {
       this.isConnectionTested = false
+      this.connectionOk = false
+      this.credentialsSaved = false
       this.error = null
+    },
+    async saveCredentials() {
+      this.resetMessagePanels()
 
       try {
-        await axios.post('ct-credentials', {
-          url: this.state.ctUrl,
-          token: this.state.ctToken,
+        await axios.post('save-config', {
+          ctUrl: this.ctUrl,
+          ctToken: this.ctToken,
         })
+        this.credentialsSaved = true
+        this.connectionSaved = true
       } catch (e) {
         console.error(e)
         const parser = new DOMParser()
@@ -97,23 +116,23 @@ export default {
           status: e.response.status,
           statusText: e.response.statusText,
         }
-      } finally {
-        this.credentialsSaved = true
       }
     },
     async testLogin() {
-      this.isConnectionTested = false
+      this.resetMessagePanels()
 
       try {
         const whoAmIResp = await axios.get('whoami', {
           params: {
-            url: this.state.ctUrl,
-            token: this.state.ctToken,
+            url: this.ctUrl,
+            token: this.ctToken,
           },
         })
 
         const { id, email, cmsUserId } = whoAmIResp.data.data
         this.whoami = { id, email, cmsUserId }
+
+        this.connectionOk = true
       } catch (e) {
         console.error(e)
 
@@ -132,6 +151,11 @@ export default {
       } finally {
         this.isConnectionTested = true
       }
+    },
+    onInput() {
+      this.isConnectionTested = false
+      this.connectionOk = false
+      this.error = null
     },
   },
 }

@@ -2,5 +2,8 @@
   "conventionalCommits.scopes": [
     "app",
     "docker"
+  ],
+  "logViewer.watch": [
+    "tmp/data/nextcloud.log"
   ]
 }

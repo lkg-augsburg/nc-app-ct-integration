@@ -7,7 +7,7 @@
 import NcNoteCard from '@nextcloud/vue/dist/Components/NcNoteCard.js'
 
 export default {
-  name: 'CredentialsSaveSuccessCard',
+  name: 'SuccessCard',
   components: {
     NcNoteCard,
   },
