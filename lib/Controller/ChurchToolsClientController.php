@@ -105,6 +105,7 @@ class ChurchToolsClientController extends Controller
     $token = $this->appConfig->getAppValueString("ctUserToken");
     $groupSyncTag = json_decode($this->appConfig->getAppValueString("ctGroupSyncTag"));
     $groupSyncTypes = $this->appConfig->getAppValueArray("ctGroupSyncTypes");
+    $groupSyncValue = $groupSyncTag->value;
 
     $params = [
       "limit" => 10,
@@ -121,7 +122,20 @@ class ChurchToolsClientController extends Controller
       $meta = $resp->getData()["meta"];
       $pagination = $meta["pagination"];
 
-      $results = array_merge($results, $data);
+      $results = array_merge(
+        $results,
+        array_filter(
+          $data,
+          function ($group) use ($groupSyncValue) {
+            foreach ($group["tags"] as $tag) {
+              if ($tag["id"] == $groupSyncValue) {
+                return true;
+              }
+            }
+            return false;
+          }
+        )
+      );
       $params["page"] = $params["page"] + 1;
 
       if ($pagination["current"] >= $pagination["lastPage"]) {
