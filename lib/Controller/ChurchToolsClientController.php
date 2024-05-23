@@ -94,7 +94,40 @@ class ChurchToolsClientController extends Controller
     $results = [];
 
     $results["ctGroupSyncTag"] = json_encode($this->appConfig->setAppValueString("ctGroupSyncTag", json_encode($groupSyncTag)));
-    $results["ctGroupSyncType"] = json_encode($this->appConfig->setAppValueArray("ctGroupSyncTypes", $groupSyncTypes));
+    $results["ctGroupSyncTypes"] = json_encode($this->appConfig->setAppValueArray("ctGroupSyncTypes", $groupSyncTypes));
+
+    return $results;
+  }
+
+  public function fetchGroups()
+  {
+    $url = $this->appConfig->getAppValueString("ctUrl");
+    $token = $this->appConfig->getAppValueString("ctUserToken");
+    $groupSyncTag = json_decode($this->appConfig->getAppValueString("ctGroupSyncTag"));
+    $groupSyncTypes = $this->appConfig->getAppValueArray("ctGroupSyncTypes");
+
+    $params = [
+      "limit" => 10,
+      "page" => 1,
+      "include[]" => "tags",
+      "group_type_ids" => $groupSyncTypes
+    ];
+
+    $results = [];
+
+    while (true) {
+      $resp = $this->ctRestClient->fetchGroups($url, $token, $params);
+      $data = $resp->getData()["data"];
+      $meta = $resp->getData()["meta"];
+      $pagination = $meta["pagination"];
+
+      $results = array_merge($results, $data);
+      $params["page"] = $params["page"] + 1;
+
+      if ($pagination["current"] >= $pagination["lastPage"]) {
+        break;
+      }
+    }
 
     return $results;
   }

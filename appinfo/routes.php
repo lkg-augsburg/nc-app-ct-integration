@@ -13,18 +13,8 @@ declare(strict_types=1);
  * it's instantiated in there
  */
 return [
-	'resources' => [
-		// 'note' => ['url' => '/notes'],
-		// 'note_api' => ['url' => '/api/0.1/notes']
-	],
+	'resources' => [],
 	'routes' => [
-		// ['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
-		// [
-		// 	'name' => 'note_api#preflighted_cors',
-		// 	'url' => '/api/0.1/{path}',
-		// 	'verb' => 'OPTIONS',
-		// 	'requirements' => ['path' => '.+']
-		// ],
 		[
 			'name' => 'church_tools_client#test',
 			'url' => '/api/test',
@@ -54,6 +44,11 @@ return [
 			'name' => 'church_tools_client#save_configuration',
 			'url' => '/api/save-config',
 			'verb' => 'POST',
-		]
-	]
+		],
+		[
+			'name' => 'church_tools_client#fetch_groups',
+			'url' => '/api/groups',
+			'verb' => 'GET',
+		],
+	],
 ];
