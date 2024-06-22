@@ -21,7 +21,8 @@
     "docker:build": "./bin/build-docker.sh",
     "docker:run": "./bin/run-docker.sh",
     "docker:stop": "./bin/stop-docker.sh",
-    "docker:clean-data": "rm -rf ./tmp/data"
+    "docker:clean-data": "rm -rf ./tmp/data",
+    "docker:terminal": "./bin/bash-docker.sh"
   },
   "dependencies": {
     "@churchtools/churchtools-client": "^1.3.11",

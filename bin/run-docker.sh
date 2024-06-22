@@ -99,6 +99,7 @@ wait_for_installed(){
 activate_app(){
 
   docker exec $RUN_CONTAINER_NAME occ app:enable --force $NC_APP_ID
+  docker exec $RUN_CONTAINER_NAME occ app:enable --force user_ldap
 }
 
 prepare
