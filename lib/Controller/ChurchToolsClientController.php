@@ -2,6 +2,7 @@
 
 namespace OCA\ChurchToolsIntegration\Controller;
 
+use OCA\ChurchToolsIntegration\Service\AppConfigService;
 use OCA\ChurchToolsIntegration\Service\CtRestClient;
 use OCP\IRequest;
 use OCP\AppFramework\Controller;
@@ -12,16 +13,19 @@ class ChurchToolsClientController extends Controller
 {
   private $appConfig;
   private $ctRestClient;
+  private $appConfigService;
 
   public function __construct(
     $AppName,
     IRequest $request,
     IAppConfig $appConfig,
     CtRestClient $ctRestClient,
+    AppConfigService $appConfigService,
   ) {
     parent::__construct($AppName, $request);
     $this->ctRestClient = $ctRestClient;
     $this->appConfig = $appConfig;
+    $this->appConfigService = $appConfigService;
   }
 
   public function fetchCsrfToken($url, $token)
@@ -42,6 +46,11 @@ class ChurchToolsClientController extends Controller
   public function fetchGroupTypes($url, $token)
   {
     return $this->ctRestClient->fetchGroupTypes($url, $token);
+  }
+
+  public function fetchGroupTypeGroups($id)
+  {
+    return $this->ctRestClient->fetchGroupTypeGroups($id);
   }
 
   public function saveConfiguration()
@@ -72,77 +81,73 @@ class ChurchToolsClientController extends Controller
     $whoami = $this->fetchWhoAmI($url, $token)->getData()['data'];
     $mail = $whoami['email'];
 
-    $fields = [
-      ["key" => "ctUrl", "value" => $url],
-      ["key" => "ctUserMail", "value" => $mail],
-      ["key" => "ctUserToken", "value" => $token],
+    return [
+      ["key" => "ctUrl", "value" => json_encode($this->appConfigService->setCtUrl($url))],
+      ["key" => "ctUserMail", "value" => json_encode($this->appConfigService->setCtUserMail($mail))],
+      ["key" => "ctUserToken", "value" => json_encode($this->appConfigService->setCtUserToken($token))],
     ];
-
-    $results = [];
-
-    foreach ($fields as $field) {
-      $fieldKey = $field["key"];
-      $fieldValue = $field["value"];
-      $results[$field["key"]] = json_encode($this->appConfig->setAppValueString($fieldKey, $fieldValue, sensitive: true));
-    }
-
-    return $results;
   }
 
   private function saveCtGroupsConfig($groupSyncTag, $groupSyncTypes)
   {
-    $results = [];
-
-    $results["ctGroupSyncTag"] = json_encode($this->appConfig->setAppValueString("ctGroupSyncTag", json_encode($groupSyncTag)));
-    $results["ctGroupSyncTypes"] = json_encode($this->appConfig->setAppValueArray("ctGroupSyncTypes", $groupSyncTypes));
+    $results = [
+      ["key" => "ctGroupSyncTag", "value" => json_encode($this->appConfigService->setCtUrl($groupSyncTag))],
+      ["key" => "ctGroupSyncTypes", "value" => json_encode($this->appConfigService->setCtUrl($groupSyncTypes))],
+    ];
 
     return $results;
   }
 
   public function fetchGroups()
   {
+    // $url = $this->appConfigService->getCtUrl();
+    // $token = $this->appConfigService->getCtUserToken();
+    // $groupSyncTag = $this->appConfigService->getCtGroupSyncTag();
+    // $groupSyncTypes = $this->appConfigService->getCtGroupSyncTypes();
+    // $groupSyncValue = $groupSyncTag->value;
+
+    // $params = [
+    //   "limit" => 10,
+    //   "page" => 1,
+    //   "include[]" => "tags",
+    //   "group_type_ids" => $groupSyncTypes
+    // ];
+
+    // $results = [];
+
+    // while (true) {
+    //   $resp = $this->ctRestClient->fetchGroups($url, $token, $params);
+    //   $data = $resp->getData()["data"];
+    //   $meta = $resp->getData()["meta"];
+    //   $pagination = $meta["pagination"];
+
+    //   $results = array_merge(
+    //     $results,
+    //     array_filter(
+    //       $data,
+    //       function ($group) use ($groupSyncValue) {
+    //         foreach ($group["tags"] as $tag) {
+    //           if ($tag["id"] == $groupSyncValue) {
+    //             return true;
+    //           }
+    //         }
+    //         return false;
+    //       }
+    //     )
+    //   );
+    //   $params["page"] = $params["page"] + 1;
+
+    //   if ($pagination["current"] >= $pagination["lastPage"]) {
+    //     break;
+    //   }
+    // }
+
+    return $this->ctRestClient->fetchSyncGroups();
+  }
+
+  public function fetchUsersForGroup($groupId)
+  {
     $url = $this->appConfig->getAppValueString("ctUrl");
     $token = $this->appConfig->getAppValueString("ctUserToken");
-    $groupSyncTag = json_decode($this->appConfig->getAppValueString("ctGroupSyncTag"));
-    $groupSyncTypes = $this->appConfig->getAppValueArray("ctGroupSyncTypes");
-    $groupSyncValue = $groupSyncTag->value;
-
-    $params = [
-      "limit" => 10,
-      "page" => 1,
-      "include[]" => "tags",
-      "group_type_ids" => $groupSyncTypes
-    ];
-
-    $results = [];
-
-    while (true) {
-      $resp = $this->ctRestClient->fetchGroups($url, $token, $params);
-      $data = $resp->getData()["data"];
-      $meta = $resp->getData()["meta"];
-      $pagination = $meta["pagination"];
-
-      $results = array_merge(
-        $results,
-        array_filter(
-          $data,
-          function ($group) use ($groupSyncValue) {
-            foreach ($group["tags"] as $tag) {
-              if ($tag["id"] == $groupSyncValue) {
-                return true;
-              }
-            }
-            return false;
-          }
-        )
-      );
-      $params["page"] = $params["page"] + 1;
-
-      if ($pagination["current"] >= $pagination["lastPage"]) {
-        break;
-      }
-    }
-
-    return $results;
   }
 }

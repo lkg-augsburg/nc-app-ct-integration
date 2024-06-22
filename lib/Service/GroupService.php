@@ -15,9 +15,24 @@ class GroupService
     $this->userManager = $userManager;
   }
 
-  public function createGroup(string $groupName): bool
+  public function getGroup(string $gid)
   {
-    return $this->groupManager->createGroup($groupName) !== null;
+    return $this->groupManager->get($gid);
+  }
+
+  public function listGroups()
+  {
+    return $this->groupManager->search('');
+  }
+
+  public function createGroup(string $gid, string $groupName = null): bool
+  {
+    $group = $this->groupManager->createGroup($gid);
+    if (isset($groupName)) {
+      $group->setDisplayName($groupName);
+    }
+
+    return $group != null;
   }
 
   public function deleteGroup(string $groupName): bool
@@ -28,7 +43,6 @@ class GroupService
     }
     return false;
   }
-
   public function addUserToGroup(string $username, string $groupName): bool
   {
     $group = $this->groupManager->get($groupName);

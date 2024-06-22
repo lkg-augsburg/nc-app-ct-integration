@@ -26,13 +26,18 @@ return [
 			'verb' => 'GET',
 		],
 		[
-			'name' => 'church_tools_client#fetch__who_am_i',
+			'name' => 'church_tools_client#fetch_who_am_i',
 			'url' => '/api/whoami',
 			'verb' => 'GET',
 		],
 		[
 			'name' => 'church_tools_client#fetch_tags',
 			'url' => '/api/ct-tags',
+			'verb' => 'GET',
+		],
+		[
+			'name' => 'church_tools_client#fetch_group_type_groups',
+			'url' => '/api/ct-group-type/{id}/groups',
 			'verb' => 'GET',
 		],
 		[
@@ -49,6 +54,21 @@ return [
 			'name' => 'church_tools_client#fetch_groups',
 			'url' => '/api/groups',
 			'verb' => 'GET',
+		],
+		[
+			'name' => 'church_tools_client#sanc',
+			'url' => '/api/sync',
+			'verb' => 'POST',
+		],
+		[
+			'name' => 'nc#fetch_existing_groups',
+			'url' => '/api/nc-groups',
+			'verb' => 'GET',
+		],
+		[
+			'name' => 'nc#sync_groups',
+			'url' => '/api/sync-groups',
+			'verb' => 'POST',
 		],
 	],
 ];

@@ -1,52 +1,38 @@
 <template>
 <ConfigSection title="ChurchTools Groups Configuration">
   <h2 class="text-xl font-bold">
-    Tag for syncing groups
+    Group Sync Settings
   </h2>
-  <NcSelect v-model="ctGroupSyncTag"
-    input-label="ChurchTools Tags"
-    placeholder="Select tag for syncing groups"
-    :options="tags"
-    :disabled="!connectionOk"
-    @input="onInputChanged" />
-  <h2 class="mt-4 text-xl font-bold">
-    Group types to sync
-  </h2>
-  <div class="grid grid-cols-5">
-    <NcCheckboxRadioSwitch v-for="(groupType, index) in groupTypes"
-      :key="index"
-      :checked.sync="ctGroupSyncTypes"
-      :value="`${groupType.id}`"
-      name="ct-group-sync-types"
-      @update:checked="onInputChanged">
-      {{ groupType.name }}
-    </NcCheckboxRadioSwitch>
-  </div>
   <div>
-    <NcButton :wide="false"
-      :disabled="!inputChanged"
-      @click="saveGroupConfig">
-      <template #icon>
-        <ContentSaveIcon :size="20" />
-      </template>
-      Save Group Config
-    </NcButton>
+    <CtGroupType v-for="(groupType, index) in groupTypes"
+      :key="index"
+      :label="groupType.name"
+      :group-type="groupType" />
+    <!-- <VerticalTab :key="vTabKey">
+      <TabPane v-for="(groupType, index) in groupTypes"
+        :key="index"
+        :label="groupType.name">
+        <p>Inhalt von {{ groupType.name }}</p>
+      </TabPane>
+    </VerticalTab> -->
   </div>
-  <SuccessCard v-if="settingsSaved" text="Group configuration successfully saved." />
 </ConfigSection>
 </template>
 <script>
-// import { loadState } from '@nextcloud/initial-state'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
-import NcSelect from '@nextcloud/vue/dist/Components/NcSelect.js'
-import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
-import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
-import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
+// import NcSelect from '@nextcloud/vue/dist/Components/NcSelect.js'
+// import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
+// import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
+// import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
 import ConfigSection from '../forms/ConfigSection.vue'
-import SuccessCard from '../cards/SuccessCard.vue'
+// import SuccessCard from '../cards/SuccessCard.vue'
 import { mapState, mapWritableState } from 'pinia'
 import { useConfigurationStore } from '../../store/useConfigurationStore.js'
+// import VerticalTab from '../tab/VerticalTab.vue'
+// import TabPane from '../tab/TabPane.vue'
+import CtGroupType from './CtGroupType.vue'
+// import { reactive, ref } from 'vue'
 
 axios.defaults.baseURL = generateUrl('/apps/churchtoolsintegration/api')
 
@@ -54,11 +40,14 @@ export default {
   name: 'CtGroupsSection',
   components: {
     ConfigSection,
-    SuccessCard,
-    ContentSaveIcon,
-    NcButton,
-    NcSelect,
-    NcCheckboxRadioSwitch,
+    // SuccessCard,
+    // ContentSaveIcon,
+    // NcButton,
+    // NcSelect,
+    // NcCheckboxRadioSwitch,
+    // VerticalTab,
+    // TabPane,
+    CtGroupType,
   },
   data: () => ({
     tags: [],
@@ -67,6 +56,9 @@ export default {
     syncGroupTypes: [],
     settingsSaved: false,
     inputChanged: false,
+    tmpGroupData: null,
+    tmpGroupSyncTypes: {},
+    vTabKey: 0,
   }),
   computed: {
     ...mapWritableState(
@@ -97,6 +89,9 @@ export default {
     })
   },
   methods: {
+    forceRerender() {
+      this.vTabKey += 1
+    },
     async loadData() {
       axios.get('ct-tags', {
         params: {
@@ -114,6 +109,11 @@ export default {
         },
       }).then(groupTypes => {
         this.groupTypes = groupTypes.data.data
+        for (const { id } of this.groupTypes) {
+          this.$set(this.tmpGroupSyncTypes, id, false)
+        }
+
+        this.forceRerender()
       })
     },
     async saveGroupConfig() {
@@ -124,11 +124,18 @@ export default {
       this.settingsSaved = true
       this.inputChanged = false
     },
+    async syncGroups() {
+      const resp = await axios.post('sync-groups')
+
+      this.tmpGroupData = resp.data
+    },
     onInputChanged(e) {
-      // eslint-disable-next-line no-console
-      console.log(e)
       this.inputChanged = true
       this.settingsSaved = false
+    },
+    onSwitchChange(id, state) {
+      // eslint-disable-next-line no-console
+      console.log(id, state)
     },
   },
 }

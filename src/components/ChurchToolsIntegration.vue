@@ -10,7 +10,7 @@
 
 <script>
 import ConnectionSection from './connection/ConnectionSection.vue'
-import CtGroupsSection from './ctGroups/CtGroupsSection.vue'
+import CtGroupsSection from './ct-groups/CtGroupsSection.vue'
 
 export default {
   name: 'ChurchToolsIntegration',
