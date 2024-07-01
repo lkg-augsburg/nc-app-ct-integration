@@ -167,12 +167,12 @@ class CtRestClient
   ) {
     $url = $this->appConfigService->getCtUrl();
     $token = $this->appConfigService->getCtUserToken();
-    $groupSyncTypes = $this->appConfigService->getCtGroupSyncTypes();
+    $groupSyncTypes = $this->appConfigService->getCtSyncGroups();
     $params = [
       "limit" => 200,
       "page" => 1,
       "include[]" => "tags",
-      "group_type_ids" => $groupSyncTypes
+      "ids" => $groupSyncTypes
     ];
 
     $results = [];

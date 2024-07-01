@@ -3,51 +3,31 @@
   <h2 class="text-xl font-bold">
     Group Sync Settings
   </h2>
+  <CtGroupsSyncButton />
   <div>
     <CtGroupType v-for="(groupType, index) in groupTypes"
       :key="index"
       :label="groupType.name"
       :group-type="groupType" />
-    <!-- <VerticalTab :key="vTabKey">
-      <TabPane v-for="(groupType, index) in groupTypes"
-        :key="index"
-        :label="groupType.name">
-        <p>Inhalt von {{ groupType.name }}</p>
-      </TabPane>
-    </VerticalTab> -->
   </div>
 </ConfigSection>
 </template>
 <script>
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
-// import NcSelect from '@nextcloud/vue/dist/Components/NcSelect.js'
-// import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
-// import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch.js'
-// import ContentSaveIcon from 'vue-material-design-icons/ContentSave.vue'
 import ConfigSection from '../forms/ConfigSection.vue'
-// import SuccessCard from '../cards/SuccessCard.vue'
 import { mapState, mapWritableState } from 'pinia'
 import { useConfigurationStore } from '../../store/useConfigurationStore.js'
-// import VerticalTab from '../tab/VerticalTab.vue'
-// import TabPane from '../tab/TabPane.vue'
 import CtGroupType from './CtGroupType.vue'
-// import { reactive, ref } from 'vue'
-
+import CtGroupsSyncButton from './CtGroupsSyncButton.vue'
 axios.defaults.baseURL = generateUrl('/apps/churchtoolsintegration/api')
 
 export default {
   name: 'CtGroupsSection',
   components: {
     ConfigSection,
-    // SuccessCard,
-    // ContentSaveIcon,
-    // NcButton,
-    // NcSelect,
-    // NcCheckboxRadioSwitch,
-    // VerticalTab,
-    // TabPane,
     CtGroupType,
+    CtGroupsSyncButton,
   },
   data: () => ({
     tags: [],

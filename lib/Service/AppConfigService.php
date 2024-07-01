@@ -39,37 +39,20 @@ class AppConfigService
     $this->appConfig->setAppValueString("ctUserToken", $value);
   }
 
-
-  public function getCtUserMail()
+  public function getCtSyncGroups(bool $grouped = false)
   {
-    return $this->appConfig->getAppValueString("ctUserMail");
+    $syncGroups = $this->appConfig->getAppValueArray("ctSyncGroups");
+
+    if($grouped){
+      return $syncGroups;
+    }
+
+    return  array_merge(...array_values($syncGroups));
   }
 
-  public function setCtUserMail($value)
+  public function setCtSyncGroups(array $value)
   {
-    $this->appConfig->setAppValueString("ctUserMail", $value);
-  }
-
-
-  public function getCtGroupSyncTag()
-  {
-    return json_decode($this->appConfig->getAppValueString("ctGroupSyncTag"));
-  }
-
-  public function setCtGroupSyncTag($value)
-  {
-    $this->appConfig->setAppValueString("ctGroupSyncTag", json_encode($value));
-  }
-
-
-  public function getCtGroupSyncTypes()
-  {
-    return $this->appConfig->getAppValueArray("ctGroupSyncTypes");
-  }
-
-  public function setCtGroupSyncTypes(array $value)
-  {
-    $this->appConfig->setAppValueArray("ctGroupSyncTypes", $value);
+    $this->appConfig->setAppValueArray("ctSyncGroups", $value);
   }
 
 

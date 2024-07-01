@@ -1,6 +1,6 @@
 <template>
-<div class="pb-4 mb-4 border-b border-gray-500 border-solid">
-  <h2 class="ml-2" style="margin-bottom: 0;">
+<div class="pb-4 mb-4 border-b border-gray-400 border-solid">
+  <h2 class="ml-2 font-semibold" style="margin-bottom: 0;">
     <NcCheckboxRadioSwitch :checked.sync="isActive" type="switch" @update:checked="onUpdateType">
       {{ label }}
     </NcCheckboxRadioSwitch>
@@ -8,7 +8,7 @@
   <h3 v-if="groupType.description">
     {{ groupType.description }}
   </h3>
-  <div>
+  <div class="pb-2 mx-4 mb-2 border-b border-gray-300 border-solid">
     <NcCheckboxRadioSwitch :checked.sync="isSelectAll"
       type="switch"
       :disabled="!isActive"
@@ -17,7 +17,7 @@
       Select all
     </NcCheckboxRadioSwitch>
   </div>
-  <div class="grid grid-cols-4 gap-2">
+  <div class="grid grid-cols-4 gap-2 mx-4">
     <NcCheckboxRadioSwitch v-for="group in groups"
       :key="group.id"
       :checked.sync="groupValues[group.id]"
@@ -59,61 +59,67 @@ export default {
     isActive: false,
     isSelectAll: false,
     groupValues: {},
+    isInit: false,
+    hasChanges: false,
   }),
   computed: {
-    // ...mapWritableState(
-    //   useConfigurationStore,
-    //   [
-    //     'ctToken',
-    //     'ctUrl',
-    //     'ctGroupSyncTag',
-    //     'ctGroupSyncTypes',
-    //   ]),
     ...mapState(
       useConfigurationStore,
-      [
-        'ctUrl',
-        'ctToken',
-      ]),
+      {
+        ctSyncGroups(store) {
+          return store.ctSyncGroups[this.groupType.id]
+        },
+      }),
   },
   async created() {
     const { id } = this.groupType
     const resp = await axios.get(`ct-group-type/${id}/groups`, {})
 
-    // eslint-disable-next-line no-console
-    console.log(resp.data)
-
     this.groups = resp.data
+    const ctSyncGroups = this.ctSyncGroups
     for (const { id } of this.groups) {
-      this.$set(this.groupValues, id, false)
+      const isActive = ctSyncGroups ? ctSyncGroups.includes(`${id}`) : false
+      this.$set(this.groupValues, id, isActive)
     }
+
+    this.isActive = Object.values(this.groupValues).includes(true)
+    this.setIsSelectedAll()
+    this.isInit = true
   },
-  // beforeMount() {
-  //   // eslint-disable-next-line no-console
-  //   console.log('beforeMount', JSON.stringify(this.groupType))
-  // },
-  // mounted() {
-  //   // eslint-disable-next-line no-console
-  //   console.log('mounted', JSON.stringify(this.groupType))
-  // },
   methods: {
     onUpdateType(isActive) {
-      // eslint-disable-next-line no-console
-      console.log(isActive)
-
+      this.hasChanges = true
       this.onSelectAll(isActive)
       this.isSelectAll = isActive
     },
-    onUpdateGroup(state, groupId) {
-      // eslint-disable-next-line no-console
-      console.log(state, groupId)
-
-      this.isSelectAll = !Object.values(this.groupValues).includes(false)
+    onUpdateGroup() {
+      this.hasChanges = true
+      this.setIsSelectedAll()
+      this.persistGroupTypes()
     },
     onSelectAll(state) {
+      this.hasChanges = true
       for (const groupId of Object.keys(this.groupValues)) {
         this.groupValues[groupId] = state
       }
+      this.persistGroupTypes()
+    },
+    setIsSelectedAll() {
+      this.isSelectAll = !Object.values(this.groupValues).includes(false)
+    },
+    persistGroupTypes() {
+      const store = useConfigurationStore()
+      const groupsToSync = [...Object.entries(this.groupValues)]
+        .reduce((acc, val) => {
+          if (val[1] === false) {
+            return acc
+          }
+          return [...acc, val[0]]
+        }, [])
+
+      store.$patch(state => {
+        state.ctSyncGroups[this.groupType.id] = groupsToSync
+      })
     },
   },
 }

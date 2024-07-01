@@ -10,34 +10,23 @@ use OCA\ChurchToolsIntegration\Models\CtUser;
 use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\JSONResponse;
-use OCP\AppFramework\Services\IAppConfig;
 use OCP\IGroup;
 use OCP\IUser;
-use Psr\Log\LoggerInterface;
 
 class NcController extends Controller
 {
-  private IAppConfig $appConfig;
   private GroupService $groupService;
-  // private GroupSyncService $groupSyncService;
   private CtRestClient $ctClient;
-  private LoggerInterface $logger;
 
   public function __construct(
     $AppName,
     IRequest $request,
-    IAppConfig $appConfig,
     GroupService $groupService,
-    // GroupSyncService $groupSyncService,
     CtRestClient $ctClient,
-    LoggerInterface $logger,
   ) {
     parent::__construct($AppName, $request);
     $this->groupService = $groupService;
-    // $this->groupSyncService = $groupSyncService;
-    $this->appConfig = $appConfig;
     $this->ctClient = $ctClient;
-    $this->logger = $logger;
   }
 
   public function fetchExistingGroups()
@@ -58,9 +47,10 @@ class NcController extends Controller
       },
       []
     );
-
+    
     // Load CT groups
-    $ctGroups = array_map(fn($tag) => CtGroup::fromJson($tag), $this->ctClient->fetchSyncGroups());
+    $ctSyncGroups = $this->ctClient->fetchSyncGroups();
+    $ctGroups = array_map(fn($tag) => CtGroup::fromJson($tag), $ctSyncGroups);
     foreach ($ctGroups as $group) {
       $gid = "ct-" . $group->getId() . "_" . preg_replace('/\s+/im', '-', strtolower($group->getName()));
       if (!isset($results[$gid])) {

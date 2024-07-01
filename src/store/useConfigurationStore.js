@@ -4,9 +4,12 @@ import { defineStore } from 'pinia'
 export const useConfigurationStore = defineStore('configuration', {
   state: () => {
     const state = {
-      ...loadState('churchtoolsintegration', 'configuration'),
+      ctUrl: '',
+      ctToken: '',
+      ctSyncGroups: {},
       connectionOk: false,
       connectionSaved: false,
+      ...loadState('churchtoolsintegration', 'configuration'),
     }
 
     state.connectionOk = !!state.ctToken

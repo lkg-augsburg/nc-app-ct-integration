@@ -60,13 +60,13 @@ class ChurchToolsClientController extends Controller
 
     $url = $params['ctUrl'] ?? null;
     $token = $params['ctToken'] ?? null;
-    $groupSyncTag = $params['ctGroupsSyncTag'] ?? null;
-    $groupSyncTypes = $params['ctGroupSyncTypes'] ?? null;
+    $ctSyncGroups = $params['ctSyncGroups'] ?? null;
+
     if (isset($url) && isset($token)) {
       $results = array_replace($results, $this->saveCtCredentials($url, $token));
     }
-    if (isset($groupSyncTag) && isset($groupSyncTypes)) {
-      $results = array_replace($results, $this->saveCtGroupsConfig($groupSyncTag, $groupSyncTypes));
+    if (isset($ctSyncGroups)) {
+      $results = array_replace($results, $this->saveCtGroupsConfig($ctSyncGroups));
     }
 
     return new JSONResponse([
@@ -78,21 +78,16 @@ class ChurchToolsClientController extends Controller
 
   private function saveCtCredentials($url, $token)
   {
-    $whoami = $this->fetchWhoAmI($url, $token)->getData()['data'];
-    $mail = $whoami['email'];
-
     return [
       ["key" => "ctUrl", "value" => json_encode($this->appConfigService->setCtUrl($url))],
-      ["key" => "ctUserMail", "value" => json_encode($this->appConfigService->setCtUserMail($mail))],
       ["key" => "ctUserToken", "value" => json_encode($this->appConfigService->setCtUserToken($token))],
     ];
   }
 
-  private function saveCtGroupsConfig($groupSyncTag, $groupSyncTypes)
+  private function saveCtGroupsConfig(array $ctSyncGroups)
   {
     $results = [
-      ["key" => "ctGroupSyncTag", "value" => json_encode($this->appConfigService->setCtUrl($groupSyncTag))],
-      ["key" => "ctGroupSyncTypes", "value" => json_encode($this->appConfigService->setCtUrl($groupSyncTypes))],
+      ["key" => "ctSyncGroups", "value" => json_encode($this->appConfigService->setCtSyncGroups(($ctSyncGroups)))],
     ];
 
     return $results;
@@ -100,48 +95,6 @@ class ChurchToolsClientController extends Controller
 
   public function fetchGroups()
   {
-    // $url = $this->appConfigService->getCtUrl();
-    // $token = $this->appConfigService->getCtUserToken();
-    // $groupSyncTag = $this->appConfigService->getCtGroupSyncTag();
-    // $groupSyncTypes = $this->appConfigService->getCtGroupSyncTypes();
-    // $groupSyncValue = $groupSyncTag->value;
-
-    // $params = [
-    //   "limit" => 10,
-    //   "page" => 1,
-    //   "include[]" => "tags",
-    //   "group_type_ids" => $groupSyncTypes
-    // ];
-
-    // $results = [];
-
-    // while (true) {
-    //   $resp = $this->ctRestClient->fetchGroups($url, $token, $params);
-    //   $data = $resp->getData()["data"];
-    //   $meta = $resp->getData()["meta"];
-    //   $pagination = $meta["pagination"];
-
-    //   $results = array_merge(
-    //     $results,
-    //     array_filter(
-    //       $data,
-    //       function ($group) use ($groupSyncValue) {
-    //         foreach ($group["tags"] as $tag) {
-    //           if ($tag["id"] == $groupSyncValue) {
-    //             return true;
-    //           }
-    //         }
-    //         return false;
-    //       }
-    //     )
-    //   );
-    //   $params["page"] = $params["page"] + 1;
-
-    //   if ($pagination["current"] >= $pagination["lastPage"]) {
-    //     break;
-    //   }
-    // }
-
     return $this->ctRestClient->fetchSyncGroups();
   }
 

@@ -13,16 +13,13 @@ class Admin implements ISettings
 
   private IAppConfig $appConfig;
   private IInitialState $initialStateService;
-  private ?string $userId;
 
   public function __construct(
     IAppConfig $appConfig,
     IInitialState $initialStateService,
-    ?string $userId,
   ) {
     $this->appConfig = $appConfig;
     $this->initialStateService = $initialStateService;
-    $this->userId = $userId;
   }
 
   /**
@@ -34,8 +31,7 @@ class Admin implements ISettings
       'ctUrl' => $this->appConfig->getAppValueString('ctUrl'),
       'ctToken' => $this->appConfig->getAppValueString('ctUserToken'),
       'ctUserMail' => $this->appConfig->getAppValueString('ctUserMail'),
-      'ctGroupSyncTag' => json_decode($this->appConfig->getAppValueString('ctGroupSyncTag')),
-      'ctGroupSyncTypes' => $this->appConfig->getAppValueArray('ctGroupSyncTypes'),
+      'ctSyncGroups' => $this->appConfig->getAppValueArray('ctSyncGroups') ?? '{}',
     ]);
     return new TemplateResponse(Application::APP_ID, 'adminSettings');
   }
