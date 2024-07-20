@@ -102,6 +102,29 @@ activate_app(){
   docker exec $RUN_CONTAINER_NAME occ app:enable --force user_ldap
 }
 
+import_ldap_cfg(){
+  base=./config
+  pattern=ldap.*
+
+  for file in "$base"/*; do
+    if [ -f "$file" ]; then
+      if [[ "$file" == $base/$pattern ]] && [[ "$file" != $base/ldap.sample ]]; then
+        echo "Creating LDAP server config for $file"
+        CFG_VERSION=$(docker exec $RUN_CONTAINER_NAME occ ldap:create-empty-config -p)
+        
+        echo "LDAP server config $CFG_VERSION created"
+        echo "Setting LDAP configurations"
+        while IFS='=' read -r key value; do
+          if [[ -n "$key" && -n "$value" ]]; then
+            RESP=$(docker exec $RUN_CONTAINER_NAME occ ldap:set-config $CFG_VERSION $key $value)
+            echo "\t$key:\t$value"
+          fi
+        done < "$file"
+      fi
+    fi
+  done
+}
+
 prepare
 
 creat_instance
@@ -109,3 +132,5 @@ creat_instance
 wait_for_installed
 
 activate_app
+
+import_ldap_cfg

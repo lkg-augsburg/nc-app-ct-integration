@@ -9,3 +9,5 @@
 js/
 node_modules/
 tmp/
+bin/config/*
+!bin/config/ldap.sample
