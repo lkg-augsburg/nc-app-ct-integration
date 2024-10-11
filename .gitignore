@@ -7,7 +7,9 @@
 /build/
 /vendor/
 js/
+css/
 node_modules/
 tmp/
 bin/config/*
 !bin/config/ldap.sample
+dist/

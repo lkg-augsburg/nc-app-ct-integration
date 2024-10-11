@@ -5,5 +5,6 @@
   ],
   "logViewer.watch": [
     "tmp/data/nextcloud.log"
-  ]
+  ],
+  "makefile.configureOnOpen": false
 }

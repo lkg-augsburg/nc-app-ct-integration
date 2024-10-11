@@ -25,7 +25,7 @@ class AppConfigService
 
   public function setCtUrl($value)
   {
-    $this->appConfig->setAppValueString("ctUrl", $value);
+    return $this->appConfig->setAppValueString("ctUrl", $value);
   }
 
 
@@ -36,7 +36,7 @@ class AppConfigService
 
   public function setCtUserToken($value)
   {
-    $this->appConfig->setAppValueString("ctUserToken", $value);
+    return $this->appConfig->setAppValueString("ctUserToken", $value);
   }
 
   public function getCtSyncGroups(bool $grouped = false)
@@ -47,12 +47,12 @@ class AppConfigService
       return $syncGroups;
     }
 
-    return  array_merge(...array_values($syncGroups));
+    return array_merge(...array_values($syncGroups));
   }
 
   public function setCtSyncGroups(array $value)
   {
-    $this->appConfig->setAppValueArray("ctSyncGroups", $value);
+    return $this->appConfig->setAppValueArray("ctSyncGroups", $value);
   }
 
 
