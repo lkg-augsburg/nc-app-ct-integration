@@ -16,58 +16,13 @@ return [
 	'resources' => [],
 	'routes' => [
 		[
-			'name' => 'church_tools_client#test',
-			'url' => '/api/test',
-			'verb' => 'GET',
-		],
-		[
-			'name' => 'church_tools_client#fetch_csrf_token',
-			'url' => '/api/csrftoken',
-			'verb' => 'GET',
-		],
-		[
-			'name' => 'church_tools_client#fetch_who_am_i',
-			'url' => '/api/whoami',
-			'verb' => 'GET',
-		],
-		[
-			'name' => 'church_tools_client#fetch_tags',
-			'url' => '/api/ct-tags',
-			'verb' => 'GET',
-		],
-		[
-			'name' => 'church_tools_client#fetch_group_type_groups',
-			'url' => '/api/ct-group-type/{id}/groups',
-			'verb' => 'GET',
-		],
-		[
-			'name' => 'church_tools_client#fetch_group_types',
-			'url' => '/api/ct-group-types',
-			'verb' => 'GET',
-		],
-		[
-			'name' => 'church_tools_client#save_configuration',
-			'url' => '/api/save-config',
+			'name' => 'church_tools_client#authenticate',
+			'url' => '/api/authenticate',
 			'verb' => 'POST',
 		],
 		[
-			'name' => 'church_tools_client#fetch_groups',
-			'url' => '/api/groups',
-			'verb' => 'GET',
-		],
-		[
-			'name' => 'church_tools_client#sanc',
-			'url' => '/api/sync',
-			'verb' => 'POST',
-		],
-		[
-			'name' => 'nc#fetch_existing_groups',
-			'url' => '/api/nc-groups',
-			'verb' => 'GET',
-		],
-		[
-			'name' => 'nc#sync_groups',
-			'url' => '/api/sync-groups',
+			'name' => 'nc#save_configuration',
+			'url' => '/api/configuration',
 			'verb' => 'POST',
 		],
 	],

@@ -7,6 +7,7 @@ use OCA\ChurchToolsIntegration\Service\CtRestClient;
 use OCA\ChurchToolsIntegration\Service\GroupService;
 use OCA\ChurchToolsIntegration\Models\CtGroupMember;
 use OCA\ChurchToolsIntegration\Models\CtUser;
+use OCA\ChurchToolsIntegration\Service\AppConfigService;
 use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\JSONResponse;
@@ -16,6 +17,7 @@ use OCP\IUser;
 class NcController extends Controller
 {
   private GroupService $groupService;
+  private AppConfigService $appConfigService;
   private CtRestClient $ctClient;
 
   public function __construct(
@@ -23,11 +25,35 @@ class NcController extends Controller
     IRequest $request,
     GroupService $groupService,
     CtRestClient $ctClient,
+    AppConfigService $appConfigService,
   ) {
     parent::__construct($AppName, $request);
     $this->groupService = $groupService;
     $this->ctClient = $ctClient;
+    $this->appConfigService = $appConfigService;
   }
+
+  private function _buildResponse($status = '', $message = '', $data = null){
+    return new JSONResponse([
+      'status' => $status,
+      'data' => $data,
+      'message' => $message
+    ]);
+  }
+
+  public function saveConfiguration($url, $token){
+    // $urlUpdated = $this->appConfigService->setCtUrl($url);
+    // $this->appConfigService->setCtUserToken($token);
+
+    return $this->_buildResponse(
+      status: 'ok',
+      data: [
+        'url' => $this->appConfigService->setCtUrl($url),
+        'token' => $this->appConfigService->setCtUserToken($token),
+      ]
+    );
+  }
+
 
   public function fetchExistingGroups()
   {

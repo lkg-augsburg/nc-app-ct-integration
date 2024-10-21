@@ -28,14 +28,40 @@ class ChurchToolsClientController extends Controller
     $this->appConfigService = $appConfigService;
   }
 
-  public function fetchCsrfToken($url, $token)
-  {
-    return $this->ctRestClient->fetchCsrfToken($url, $token);
+  public function authenticate($url, $token){
+    $resp = $this->ctRestClient->fetchWhoAmI($url, $token)->getData();
+    if($resp['status'] != 'ok'){
+      return $resp;
+    }
+    $respData = $resp['data']['data'];
+    
+    $respInfo = $this->ctRestClient->fetchInfo($url, $token)->getData();
+    if($respInfo['status'] != 'ok'){
+      return $respInfo;
+    }
+    $respInfoData = $respInfo['data'];
+    
+    return new JSONResponse([
+      'status' => 'ok',
+      'data' => [
+        'userMail' => $respData['email'],
+        'userId' => $respData['id'],
+        'userName' => $respData['cmsUserId'],
+        'orgName' => $respInfoData['siteName'],
+        'orgShortName' => $respInfoData['shortName'],
+      ],
+      'message' => 'Credentials okay ' . $url,
+    ]);
   }
 
   public function fetchWhoAmI($url, $token)
   {
     return $this->ctRestClient->fetchWhoAmI($url, $token);
+  }
+
+  public function fetchCsrfToken($url, $token)
+  {
+    return $this->ctRestClient->fetchCsrfToken($url, $token);
   }
 
   public function fetchTags($url, $token)

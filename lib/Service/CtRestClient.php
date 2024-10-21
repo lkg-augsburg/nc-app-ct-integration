@@ -53,22 +53,59 @@ class CtRestClient
       $response = $this->client->get($url, [
         'headers' => $this->buildHeaders($token),
       ]);
-      return new JSONResponse(json_decode($response->getBody(), true));
+
+      $status = $response->getStatusCode();
+      if($status == 200) {
+        return $this->_buildResponse(status: 'ok', data: json_decode($response->getBody(), true));
+      } else if ($status == 401){
+        return $this->_buildResponse(status: 'error', message: 'Unauthorized');
+      } else {
+        return $this->_buildResponse(status: 'error', message: 'Error', data: [
+          'body' => $response->getBody(),
+          'status' => $status
+        ]);
+      }
     } catch (Exception $e) {
       $this->logger->error($e);
-      return new JSONResponse([json_encode($e)]);
+
+      $message = 'Exception';
+      if($e->getCode() == 404){
+        $message = 'URL not found';
+      }
+
+      return $this->_buildResponse(status: 'error', message: $message, data: [
+        'message' => $e->getMessage(),
+        'code' => $e->getCode(),
+      ]);
     }
   }
 
-  public function fetchCsrfToken($url, $token)
-  {
-    $path = '/api/csrftoken';
-    return $this->_execGet($url . $path, $token);
+  private function _buildResponse($status = '', $message = '', $data = null){
+    return new JSONResponse([
+      'status' => $status,
+      'data' => $data,
+      'message' => $message
+    ]);
   }
 
   public function fetchWhoAmI($url, $token)
   {
     $path = '/api/whoami?only_allow_authenticated=true';
+    return $this->_execGet($url . $path, $token);
+  }
+
+  public function fetchInfo($url, $token)
+  {
+    $path = '/api/info';
+    return $this->_execGet($url . $path, $token);
+  }
+
+
+
+
+  public function fetchCsrfToken($url, $token)
+  {
+    $path = '/api/csrftoken';
     return $this->_execGet($url . $path, $token);
   }
 

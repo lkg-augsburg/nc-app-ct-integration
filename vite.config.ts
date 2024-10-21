@@ -27,7 +27,7 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: 'dist',
+    outDir: '.',
     lib: {
       // Pfad zu deiner Haupteingabedatei (TypeScript)
       entry: 'src/adminSettings.ts',
@@ -36,15 +36,14 @@ export default defineConfig({
       // Formate, in denen die Bibliothek gebaut werden soll
       formats: ['es'], // oder ['es', 'cjs', 'umd', 'iife'] je nach Bedarf
       // Anpassung des Ausgabedateinamens
-      fileName: () => `${appId}-adminSettings.js`,
-
+      fileName: () => `js/${appId}-adminSettings.js`,
     },
     rollupOptions: {
       output: {
         // Benennt die generierte CSS-Datei um
         assetFileNames: (assetInfo) => {
           if (assetInfo.name === 'style.css') {
-            return `${appId}-adminSettings.css`;
+            return `css/${appId}-adminSettings.css`;
           }
           // Behandelt andere Assets wie gewohnt
           return 'assets/[name]-[hash][extname]';

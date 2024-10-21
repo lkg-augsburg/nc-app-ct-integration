@@ -1,0 +1,1 @@
+export const CT_APP_ID = 'churchtoolsintegration';

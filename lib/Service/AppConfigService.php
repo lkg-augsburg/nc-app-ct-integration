@@ -17,7 +17,6 @@ class AppConfigService
     $this->appConfig = $appConfig;
   }
 
-
   public function getCtUrl()
   {
     return $this->appConfig->getAppValueString("ctUrl");
@@ -27,7 +26,6 @@ class AppConfigService
   {
     return $this->appConfig->setAppValueString("ctUrl", $value);
   }
-
 
   public function getCtUserToken()
   {
