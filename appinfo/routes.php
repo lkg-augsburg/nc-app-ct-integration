@@ -25,5 +25,15 @@ return [
 			'url' => '/api/configuration',
 			'verb' => 'POST',
 		],
+		[
+			'name' => 'church_tools_client#fetch_group_types',
+			'url' => '/api/group-type',
+			'verb' => 'GET',
+		],
+		[
+			'name' => 'church_tools_client#fetch_all_groups',
+			'url' => '/api/group',
+			'verb' => 'GET',
+		],
 	],
 ];

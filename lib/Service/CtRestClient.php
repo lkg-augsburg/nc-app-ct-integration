@@ -100,21 +100,6 @@ class CtRestClient
     return $this->_execGet($url . $path, $token);
   }
 
-
-
-
-  public function fetchCsrfToken($url, $token)
-  {
-    $path = '/api/csrftoken';
-    return $this->_execGet($url . $path, $token);
-  }
-
-  public function fetchTags($url, $token)
-  {
-    $path = '/api/tags?type=persons';
-    return $this->_execGet($url . $path, $token);
-  }
-
   public function fetchGroupTypes($url, $token)
   {
     $path = '/api/group/grouptypes';
@@ -127,151 +112,162 @@ class CtRestClient
     return $this->_execGet($url . $path, $token, $params);
   }
 
-  public function fetchGroupTypeGroups($id){
-    $path = '/api/groups';
-    $url = $this->appConfigService->getCtUrl();
-    $token = $this->appConfigService->getCtUserToken();
-    $params = [
-      "limit" => 200,
-      "page" => 1,
-      "include[]" => "tags",
-      "group_type_ids" => [$id]
-    ];
+  // public function fetchCsrfToken($url, $token)
+  // {
+  //   $path = '/api/csrftoken';
+  //   return $this->_execGet($url . $path, $token);
+  // }
 
-    $results = [];
+  // public function fetchTags($url, $token)
+  // {
+  //   $path = '/api/tags?type=persons';
+  //   return $this->_execGet($url . $path, $token);
+  // }
 
-    while (true) {
-      $resp = $this->fetchGroups($url, $token, $params);
-      $data = $resp->getData()["data"];
-      $meta = $resp->getData()["meta"];
-      $pagination = $meta["pagination"];
+  // public function fetchGroupTypeGroups($id){
+  //   $url = $this->appConfigService->getCtUrl();
+  //   $token = $this->appConfigService->getCtUserToken();
+  //   $params = [
+  //     "limit" => 200,
+  //     "page" => 1,
+  //     "include[]" => "tags",
+  //     "group_type_ids" => [$id]
+  //   ];
 
-      $results = array_merge($results, $data);
-      $params["page"] = $params["page"] + 1;
+  //   $results = [];
 
-      if ($pagination["current"] >= $pagination["lastPage"]) {
-        break;
-      }
-    }
+  //   while (true) {
+  //     $resp = $this->fetchGroups($url, $token, $params);
+  //     $data = $resp->getData()["data"];
+  //     $meta = $resp->getData()["meta"];
+  //     $pagination = $meta["pagination"];
 
-    return $results;
-  }
+  //     $results = array_merge($results, $data);
+  //     $params["page"] = $params["page"] + 1;
+
+  //     if ($pagination["current"] >= $pagination["lastPage"]) {
+  //       break;
+  //     }
+  //   }
+
+  //   return $results;
+  // }
 
   /**
    * Summary of fetchGroupMembers
    * @param string $gid
    * @return CtGroupMember[]
    */
-  public function fetchGroupMembers(string $gid)
-  {
-    $url = $this->appConfigService->getCtUrl();
-    $token = $this->appConfigService->getCtUserToken();
-    $params = [
-      "limit" => 200,
-      "page" => 1,
-      "include[]" => "tags",
-    ];
+  // public function fetchGroupMembers(string $gid)
+  // {
+  //   $url = $this->appConfigService->getCtUrl();
+  //   $token = $this->appConfigService->getCtUserToken();
+  //   $params = [
+  //     "limit" => 200,
+  //     "page" => 1,
+  //     "include[]" => "tags",
+  //   ];
 
-    $path = "/api/groups/$gid/members";
+  //   $path = "/api/groups/$gid/members";
 
-    $results = [];
+  //   $results = [];
 
-    while (true) {
-      $resp = $this->_execGet($url . $path, $token, $params);
-      $data = $resp->getData()["data"];
-      $meta = $resp->getData()["meta"];
-      $pagination = $meta["pagination"];
+  //   while (true) {
+  //     $resp = $this->_execGet($url . $path, $token, $params);
+  //     $data = $resp->getData()["data"];
+  //     $meta = $resp->getData()["meta"];
+  //     $pagination = $meta["pagination"];
 
-      $results = array_merge($results, array_map(function ($member) {
-        try {
-          return CtGroupMember::fromJson($member);
-        } catch (Exception $e) {
-          $this->logger->error($e->getMessage());
-        }
-      }, $data));
-      $params["page"] = $params["page"] + 1;
+  //     $results = array_merge($results, array_map(function ($member) {
+  //       try {
+  //         return CtGroupMember::fromJson($member);
+  //       } catch (Exception $e) {
+  //         $this->logger->error($e->getMessage());
+  //       }
+  //     }, $data));
+  //     $params["page"] = $params["page"] + 1;
 
-      if ($pagination["current"] >= $pagination["lastPage"]) {
-        break;
-      }
-    }
+  //     if ($pagination["current"] >= $pagination["lastPage"]) {
+  //       break;
+  //     }
+  //   }
 
-    return $results;
+  //   return $results;
 
-  }
+  // }
 
-  public function fetchSyncGroups(
-  ) {
-    $url = $this->appConfigService->getCtUrl();
-    $token = $this->appConfigService->getCtUserToken();
-    $groupSyncTypes = $this->appConfigService->getCtSyncGroups();
-    $params = [
-      "limit" => 200,
-      "page" => 1,
-      "include[]" => "tags",
-      "ids" => $groupSyncTypes
-    ];
+  // public function fetchSyncGroups(
+  // ) {
+  //   $url = $this->appConfigService->getCtUrl();
+  //   $token = $this->appConfigService->getCtUserToken();
+  //   $groupSyncTypes = $this->appConfigService->getCtSyncGroups();
+  //   $params = [
+  //     "limit" => 200,
+  //     "page" => 1,
+  //     "include[]" => "tags",
+  //     "ids" => $groupSyncTypes
+  //   ];
 
-    $results = [];
+  //   $results = [];
 
-    while (true) {
-      $resp = $this->fetchGroups($url, $token, $params);
-      $data = $resp->getData()["data"];
-      $meta = $resp->getData()["meta"];
-      $pagination = $meta["pagination"];
+  //   while (true) {
+  //     $resp = $this->fetchGroups($url, $token, $params);
+  //     $data = $resp->getData()["data"];
+  //     $meta = $resp->getData()["meta"];
+  //     $pagination = $meta["pagination"];
 
-      $results = array_merge($results, $data);
-      $params["page"] = $params["page"] + 1;
+  //     $results = array_merge($results, $data);
+  //     $params["page"] = $params["page"] + 1;
 
-      if ($pagination["current"] >= $pagination["lastPage"]) {
-        break;
-      }
-    }
+  //     if ($pagination["current"] >= $pagination["lastPage"]) {
+  //       break;
+  //     }
+  //   }
 
-    return $results;
-  }
+  //   return $results;
+  // }
 
   /**
    * Summary of fetchUsers
    * @param int[]|string[] $userIds
    * @return CtUser[]
    */
-  public function fetchUsers($userIds = [])
-  {
-    $url = $this->appConfigService->getCtUrl();
-    $token = $this->appConfigService->getCtUserToken();
-    $params = [
-      "limit" => 200,
-      "page" => 1,
-    ];
-    if (!empty($userIds)) {
-      $params["ids"] = $userIds;
-    }
+  // public function fetchUsers($userIds = [])
+  // {
+  //   $url = $this->appConfigService->getCtUrl();
+  //   $token = $this->appConfigService->getCtUserToken();
+  //   $params = [
+  //     "limit" => 200,
+  //     "page" => 1,
+  //   ];
+  //   if (!empty($userIds)) {
+  //     $params["ids"] = $userIds;
+  //   }
 
-    $path = "/api/persons";
+  //   $path = "/api/persons";
 
-    $results = [];
+  //   $results = [];
 
-    while (true) {
-      $resp = $this->_execGet($url . $path, $token, $params);
-      $data = $resp->getData()["data"];
-      $meta = $resp->getData()["meta"];
-      $pagination = $meta["pagination"];
+  //   while (true) {
+  //     $resp = $this->_execGet($url . $path, $token, $params);
+  //     $data = $resp->getData()["data"];
+  //     $meta = $resp->getData()["meta"];
+  //     $pagination = $meta["pagination"];
 
-      $results = array_merge($results, array_map(function ($member) {
-        try {
-          return CtUser::fromJson($member);
-        } catch (Exception $e) {
-          $this->logger->error($e->getMessage());
-        }
-      }, $data));
-      $params["page"] = $params["page"] + 1;
+  //     $results = array_merge($results, array_map(function ($member) {
+  //       try {
+  //         return CtUser::fromJson($member);
+  //       } catch (Exception $e) {
+  //         $this->logger->error($e->getMessage());
+  //       }
+  //     }, $data));
+  //     $params["page"] = $params["page"] + 1;
 
-      if ($pagination["current"] >= $pagination["lastPage"]) {
-        break;
-      }
-    }
+  //     if ($pagination["current"] >= $pagination["lastPage"]) {
+  //       break;
+  //     }
+  //   }
 
-    return $results;
-  }
+  //   return $results;
+  // }
 }

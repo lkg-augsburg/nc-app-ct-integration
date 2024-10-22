@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div :class="['border p-4 rounded-md', typeClasses]">
+  <div :class="['border p-4 rounded-md border-solid', typeClasses]">
     <strong class="block mb-2 font-bold">{{ title }}</strong>
     <slot></slot>
   </div>
@@ -14,13 +14,14 @@ const cardStyleMapping = {
   info: "bg-blue-100 text-blue-700 border-blue-400",
   warning: "bg-yellow-100 text-yellow-700 border-yellow-400",
   danger: "bg-red-100 text-red-700 red-400",
-  default: "bg-grey-100 text-grey-700 border-grey-400",
+  transparent: "bg-transparent border-transparent",
+  default: "bg-gray-100 text-gray-700 border-gray-400",
 }
 
 const props = defineProps({
   type: {
-    type: String as PropType<'success' | 'info' | 'warning' | 'danger'>,
-    default: 'info',
+    type: String as PropType<'success' | 'info' | 'warning' | 'danger' | 'transparent'>,
+    default: 'default',
   },
   title: {
     type: String,

@@ -1,23 +1,153 @@
 {
-  "uuid": "a724169e-b7f8-45d9-94f4-f1ed6c9545c0",
+  "uuid": "e39af5a3-b3a1-461f-8975-ea31964388a7",
   "lastMigration": 32,
   "name": "Churchtools",
-  "endpointPrefix": "",
+  "endpointPrefix": "api",
   "latency": 0,
   "port": 3001,
   "hostname": "",
-  "folders": [],
+  "folders": [
+    {
+      "uuid": "1581e518-6cd5-4a08-be92-ca00361143f4",
+      "name": "General",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "fdfb1b46-2637-4434-878b-c6fb6626eb6b"
+        },
+        {
+          "type": "route",
+          "uuid": "b0b13636-30f2-4d48-8d71-7a877e5e31cc"
+        }
+      ]
+    }
+  ],
   "routes": [
     {
-      "uuid": "b425edf0-343f-43a3-baf3-9b8899576a49",
+      "uuid": "fdfb1b46-2637-4434-878b-c6fb6626eb6b",
+      "type": "http",
+      "documentation": "Currently logged in user",
+      "method": "get",
+      "endpoint": "whoami",
+      "responses": [
+        {
+          "uuid": "02a8fab4-27f5-4475-b4d6-42a6831845d9",
+          "body": "{{setVar 'mail' (faker 'internet.email')}}\n{{setVar 'lat' (faker 'location.latitude' precision=12)}}\n{{setVar 'long' (faker 'location.longitude' precision=12)}}\n{\n  \"data\": {\n    \"id\": \"{{faker 'number.int' max=9999}}\",\n    \"guid\": \"{{faker 'string.uuid'}}\",\n    \"securityLevelForPerson\": {{faker 'number.int' min=10000 max=99999}}\n    \"editSecurityLevelForPerson\": {{faker 'number.int' min=10000 max=99999}},\n    \"title\": \"\",\n    \"firstName\": \"{{faker 'person.firstName'}}\",\n    \"lastName\": \"{{faker 'person.lastName'}}\",\n    \"nickname\": \"\",\n    \"job\": \"{{faker 'person.jobTitle'}}\",\n    \"street\": \"{{faker 'location.street'}}\",\n    \"addressAddition\": \"\",\n    \"zip\": \"{{faker 'location.zipCode'}}\",\n    \"city\": \"{{faker 'location.city'}}\",\n    \"country\": \"{{faker 'location.country'}}\",\n    \"latitude\": {{@lat}},\n    \"longitude\": {{@long}},\n    \"latitudeLoose\": {{@lat}},\n    \"longitudeLoose\": {{@long}},\n    \"phonePrivate\": \"{{faker 'phone.number' style='international'}}\",\n    \"phoneWork\": \"{{faker 'phone.number' style='international'}}\",\n    \"mobile\": \"{{faker 'phone.number' style='international'}}\",\n    \"fax\": \"{{faker 'phone.number' style='international'}}\",\n    \"birthName\": \"\",\n    \"birthday\": \"{{faker 'number.int' min=1930 max=2024}}-0{{faker 'number.int' min=3 max=10}}-{{faker 'number.int' min=10 max=30}}\",\n    \"birthplace\": \"\",\n    \"imageUrl\": \"\",\n    \"familyImageUrl\": \"\",\n    \"sexId\": {{faker 'number.int' max=2}},\n    \"email\": \"{{@mail}}\",\n    \"emails\": [\n      {\n        \"email\": \"{{@mail}}\",\n        \"isDefault\": true,\n        \"contactLabelId\": 1\n      }\n    ],\n    \"cmsUserId\": \"{{faker 'internet.userName'}}\",\n    \"optigemId\": \"{{faker 'number.int' max=9999}}\",\n    \"privacyPolicyAgreement\": {\n      \"date\": \"{{faker 'number.int' min=1950 max=2024}}-0{{faker 'number.int' min=3 max=10}}-{{faker 'number.int' min=10 max=30}}\",\n      \"typeId\": 2,\n      \"whoId\": 1\n    },\n    \"privacyPolicyAgreementDate\": \"{{faker 'number.int' min=1950 max=2024}}-0{{faker 'number.int' min=3 max=10}}-{{faker 'number.int' min=10 max=30}}\",\n    \"privacyPolicyAgreementTypeId\": 2,\n    \"privacyPolicyAgreementWhoId\": 1,\n    \"nationalityId\": {{faker 'number.int' max=99}},\n    \"familyStatusId\": {{faker 'number.int' max=10}},\n    \"weddingDate\": null,\n    \"campusId\": 0,\n    \"statusId\": {{faker 'number.int' max=5}},\n    \"departmentIds\": [\n      1\n    ],\n    \"firstContact\": null,\n    \"dateOfBelonging\": null,\n    \"dateOfEntry\": \"{{faker 'number.int' min=1950 max=2024}}-0{{faker 'number.int' min=3 max=9}}-{{faker 'number.int' min=10 max=30}}\",\n    \"dateOfResign\": null,\n    \"dateOfBaptism\": null,\n    \"placeOfBaptism\": \"\",\n    \"baptisedBy\": \"\",\n    \"referredBy\": \"\",\n    \"referredTo\": \"\",\n    \"growPathId\": null,\n    \"canChat\": true,\n    \"invitationStatus\": \"accepted\",\n    \"chatActive\": true,\n    \"isArchived\": false,\n    \"meta\": {\n      \"createdDate\": \"{{faker 'date.between' from='2018-01-01T00:00:00.000Z' to='2024-10-10T00:00:00.000Z'}}\",\n      \"createdPerson\": {\n        \"id\": null\n      },\n      \"modifiedDate\": \"{{faker 'date.recent'}}\",\n      \"modifiedPerson\": {\n        \"id\": -1\n      }\n    },\n    \"telefonnichtoeffentlich\": \"\",\n    \"acceptedsecurity\": \"{{faker 'number.int' min=1950 max=2024}}-0{{faker 'number.int' min=3 max=10}}-{{faker 'number.int' min=10 max=30}}\",\n    \"country_intern\": \"\",\n    \"day_of_death\": null,\n    \"lastLogin\": \"{{faker 'date.recent'}}\"\n  },\n  \"meta\": {\n    \"simulatingUserId\": null\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "User with token",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Login: def",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "61f0b37a-79bd-457b-87cb-38f1083a2733",
+          "body": "{\n  \"message\": \"Unauthenticated\",\n  \"translatedMessage\": \"Die Session ist abgelaufen, bitte logge dich erneut ein.\",\n  \"messageKey\": \"exception.unauthorized\",\n  \"args\": [],\n  \"errors\": []\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "Unauthenticated (only_allow_authenticated)",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "only_allow_authenticated",
+              "value": ".*",
+              "invert": true,
+              "operator": "null"
+            },
+            {
+              "target": "header",
+              "modifier": "authorization",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "bc9a3f50-9a5d-4cff-a2a1-5f13caa906c5",
+          "body": "{\n  \"data\": {\n    \"id\": -1,\n    \"guid\": \"\",\n    \"securityLevelForPerson\": 0,\n    \"editSecurityLevelForPerson\": 0,\n    \"firstName\": \"\",\n    \"lastName\": \"Anonymous\",\n    \"imageUrl\": null,\n    \"privacyPolicyAgreement\": [],\n    \"canChat\": false,\n    \"invitationStatus\": \"not_invited\",\n    \"chatActive\": true,\n    \"isArchived\": false,\n    \"meta\": {\n      \"createdDate\": null,\n      \"createdPerson\": {\n        \"id\": null\n      },\n      \"modifiedDate\": null,\n      \"modifiedPerson\": {\n        \"id\": null\n      }\n    }\n  },\n  \"meta\": {\n    \"simulatingUserId\": null\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Unauthenticated (Empty response)",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "authorization",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            },
+            {
+              "target": "query",
+              "modifier": "only_allow_authenticated",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "b0b13636-30f2-4d48-8d71-7a877e5e31cc",
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "",
+      "endpoint": "info",
       "responses": [
         {
-          "uuid": "e30ec901-37f3-4651-b882-01b794fc6c2c",
-          "body": "{}",
+          "uuid": "5f161019-8ed6-4f3b-903d-4dda6585bb9d",
+          "body": "{\n  \"build\": \"32390\",\n  \"version\": \"3.114.1\",\n  \"siteName\": \"{{faker 'company.name'}}\",\n  \"shortName\": \"{{faker 'company.name'}}\",\n  \"address\": {\n    \"meetingAt\": \"{{faker 'company.name'}}\",\n    \"street\": \"{{faker 'location.street'}} {{faker 'location.buildingNumber'}}\",\n    \"addition\": null,\n    \"district\": \"{{faker 'location.street'}}\",\n    \"zip\": \"{{faker 'location.zipCode'}}\",\n    \"city\": \"{{faker 'location.city'}}\",\n    \"country\": \"{{faker 'countryCode'}}\",\n    \"latitude\": \"{{faker 'location.latitude' precision=7}}\",\n    \"longitude\": \"{{faker 'location.longitude' precision=7}}\",\n  }\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -40,8 +170,8 @@
   ],
   "rootChildren": [
     {
-      "type": "route",
-      "uuid": "b425edf0-343f-43a3-baf3-9b8899576a49"
+      "type": "folder",
+      "uuid": "1581e518-6cd5-4a08-be92-ca00361143f4"
     }
   ],
   "proxyMode": false,

@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-  <label class="inline-block w-48" :for="`ct-${id}`">{{ label }}</label>
+  <label class="inline-block w-52" :for="`ct-${id}`">{{ label }}</label>
   <input :id="`ct-${id}`"
     class="w-96"
     :type="fieldType"

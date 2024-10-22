@@ -9,7 +9,7 @@
       placeholder="ChurchTools Password / Token"
       label="ChurchTools Password / Token"
       field-type="password" />
-    <Card :type="cardType" :title="cardTitle" v-if="authWasExecuted">
+    <Card :type="cardType" :title="cardTitle" v-if="authWasExecuted" class="mt-2">
       <template v-if="authSuccessful">
           <div class="grid grid-cols-[150px_1fr]">
             <div>Organisation</div>
@@ -21,15 +21,24 @@
       <div v-if="authErrorMessage">{{ authErrorMessage }}</div>
     </Card>
   </ConfigSection>
+  <ConfigSection title="Configuration" class="m-2">
+    <CtGroupType v-for="(groupType, index) in stateStore.groupTypes"
+      :key="index"
+      :title="groupType.name"
+      :description="groupType.description"
+      :group-type="groupType.id"
+    />
+  </ConfigSection>
 </template>
 <script setup lang="ts">
 import { useStateStore } from '@/stores/useStateStore';
-import Card from '../card/card.vue';
+import Card from '@/components/card/card.vue';
 import ConfigSection from '../forms/ConfigSection.vue'
 import InputField from '../forms/InputField.vue'
 import { useConfigStore } from '@/stores/useConfigStore';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import CtGroupType from '../configuration/CtGroupType.vue';
 
 const configStore = useConfigStore()
 const stateStore = useStateStore()

@@ -13,3 +13,4 @@ tmp/
 bin/config/*
 !bin/config/ldap.sample
 dist/
+.DS_Store

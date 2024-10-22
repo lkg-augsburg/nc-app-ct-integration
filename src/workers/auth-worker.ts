@@ -1,9 +1,71 @@
 import type { CtAuthenticationResponse } from "@/models/requests/CtAuthentication";
 import type { ErrorResponse } from "@/models/requests/ErrorResponse";
+import type { Group } from "@/models/requests/Group";
+import type { GroupType } from "@/models/requests/GroupType";
+import type Response from "@/models/requests/Response";
 import { authenticateChurchTools } from "@/services/auth-service";
 import { persistConfiguration } from "@/services/config-service";
+import { fetchAllGroups, fetchGroupTypes } from "@/services/ct-service";
 import { useConfigStore } from "@/stores/useConfigStore";
 import { useStateStore } from "@/stores/useStateStore";
+
+function handleErrorResponse(response: Response<ErrorResponse>){
+  const stateStore = useStateStore()
+  stateStore.authSuccessful = false
+  stateStore.authErrorMessage = response.message
+
+  const errorData = response.data
+
+  if(errorData.message){
+    stateStore.authErrorMessage = errorData.message
+  }
+}
+
+function handleEmptyResponse(){
+  const stateStore = useStateStore()
+  stateStore.authSuccessful = false
+  stateStore.authErrorMessage = ''
+}
+
+async function handleAuthSuccess(response: Response<CtAuthenticationResponse>){
+  const configStore = useConfigStore()
+  const stateStore = useStateStore()
+  stateStore.authSuccessful = true
+  stateStore.authErrorMessage = ''
+  stateStore.setAuthData(response.data)
+  await persistConfiguration(configStore.ctUrl, configStore.ctToken)
+}
+
+function isResponseEmpty(response: Response<CtAuthenticationResponse>){
+  const { userId, userName, orgName } = response.data
+  return !userId || !userName || !orgName
+}
+
+async function handleGroups(){
+  const { data } = await fetchAllGroups()
+  if(data.status === 'ok'){
+    console.log(data)
+    const groups = data.data
+    console.log("groups", groups)
+    const stateStore = useStateStore()
+    stateStore.groups = data.data as Group[]
+  } else {
+    throw new Error(data.message)
+  }
+}
+
+async function handleGroupTypes(){
+  const { data } = await fetchGroupTypes()
+  if(data.status === 'ok'){
+    console.log(data)
+    const groupTypes = data.data
+    console.log("groupTypes", groupTypes)
+    const stateStore = useStateStore()
+    stateStore.groupTypes = data.data as GroupType[]
+  } else {
+    throw new Error(data.message)
+  }
+}
 
 setInterval(async () => {
   const stateStore = useStateStore()
@@ -11,33 +73,22 @@ setInterval(async () => {
 
   if(stateStore.shouldAuthenticate){
     stateStore.shouldAuthenticate = false
-    
+
     const { data: responseData } = await authenticateChurchTools(configStore.ctUrl, configStore.ctToken)
     stateStore.authWasExecuted = true
 
     if(responseData.status === 'ok'){
-      const { userId, userName, orgName } = responseData.data as CtAuthenticationResponse
-
-      if(!userId || !userName || !orgName){
-        stateStore.authSuccessful = false
-        stateStore.authErrorMessage = ''
+      if(isResponseEmpty(responseData as Response<CtAuthenticationResponse>)){
+        handleEmptyResponse()
       } else {
-        stateStore.authSuccessful = true
-        stateStore.authErrorMessage = ''
-        stateStore.setAuthData(responseData.data as CtAuthenticationResponse)
-        persistConfiguration(configStore.ctUrl, configStore.ctToken)
+        await handleAuthSuccess(responseData as Response<CtAuthenticationResponse>)
+        await Promise.all([
+          handleGroupTypes(),
+          handleGroups()
+        ]);
       }
     } else {
-      console.log(responseData.data)
-
-      stateStore.authSuccessful = false
-      stateStore.authErrorMessage = responseData.message
-
-      const errorData = responseData.data as ErrorResponse
-
-      if(errorData.message){
-        stateStore.authErrorMessage = errorData.message
-      }
+      handleErrorResponse(responseData as Response<ErrorResponse>)
     }
   }
-}, 2000)
+}, 1000)
