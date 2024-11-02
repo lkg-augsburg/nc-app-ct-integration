@@ -1,10 +1,7 @@
 <?php
-
 namespace OCA\ChurchToolsIntegration\Service;
 
-use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Services\IAppConfig;
-use OCP\Http\Client\IClientService;
 
 class AppConfigService
 {

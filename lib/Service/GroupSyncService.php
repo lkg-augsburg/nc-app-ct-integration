@@ -21,54 +21,54 @@ class GroupSyncService
     $this->$ctClient = $ctClient;
   }
 
-  public function syncGroups()
-  {
-    $results = array_reduce(
-      $this->groupService->listGroups(),
-      function (array $carry, IGroup $group) {
-        if ($group->getGID() != "admin") {
-          $carry[$group->getGID()] = "INIT";
-        }
-        return $carry;
-      },
-      []
-    );
+  // public function syncGroups()
+  // {
+  //   $results = array_reduce(
+  //     $this->groupService->listGroups(),
+  //     function (array $carry, IGroup $group) {
+  //       if ($group->getGID() != "admin") {
+  //         $carry[$group->getGID()] = "INIT";
+  //       }
+  //       return $carry;
+  //     },
+  //     []
+  //   );
 
-    $ctGroups = array_map(fn($tag) => CtGroup::fromJson($tag), $this->ctClient->fetchSyncGroups());
-    foreach ($ctGroups as $group) {
-      $gid = "ct-" . $group->getId() . "_" . preg_replace('/\s+/im', '-', strtolower($group->getName()));
-      if (!isset($results[$gid])) {
-        $gname = $group->getName();
-        $groupCreated = $this->groupService->createGroup($gid, $gname);
+  //   $ctGroups = array_map(fn($tag) => CtGroup::fromJson($tag), $this->ctClient->fetchSyncGroups());
+  //   foreach ($ctGroups as $group) {
+  //     $gid = "ct-" . $group->getId() . "_" . preg_replace('/\s+/im', '-', strtolower($group->getName()));
+  //     if (!isset($results[$gid])) {
+  //       $gname = $group->getName();
+  //       $groupCreated = $this->groupService->createGroup($gid, $gname);
 
-        $results[$gid] = $groupCreated ? "CREATE" : "NO_CREATE";
-      } else {
-        $results[$gid] = "EXIST";
-      }
-    }
+  //       $results[$gid] = $groupCreated ? "CREATE" : "NO_CREATE";
+  //     } else {
+  //       $results[$gid] = "EXIST";
+  //     }
+  //   }
 
-    foreach ($results as $gid => $state) {
-      if ($state == "INIT") {
-        $this->groupService->deleteGroup($gid);
-        $results[$gid] = "DELETE";
-      }
-    }
+  //   foreach ($results as $gid => $state) {
+  //     if ($state == "INIT") {
+  //       $this->groupService->deleteGroup($gid);
+  //       $results[$gid] = "DELETE";
+  //     }
+  //   }
 
-    return new JSONResponse($results);
-  }
+  //   return new JSONResponse($results);
+  // }
 
-  public function syncGroupMembers(string $gid)
-  {
-    $group = $this->groupService->getGroup($gid);
+  // public function syncGroupMembers(string $gid)
+  // {
+  //   $group = $this->groupService->getGroup($gid);
 
-    if ($group == null) {
-      throw new \InvalidArgumentException("$gid is not an existing group!");
-    }
+  //   if ($group == null) {
+  //     throw new \InvalidArgumentException("$gid is not an existing group!");
+  //   }
 
-    $ctGid = preg_replace("/^ct-(\d+)_.*/", "$1", $gid);
+  //   $ctGid = preg_replace("/^ct-(\d+)_.*/", "$1", $gid);
 
-    return $ctGid;
+  //   return $ctGid;
 
-    // return $this->ctClient->fetchGroupMembers("$ctGid");
-  }
+  //   // return $this->ctClient->fetchGroupMembers("$ctGid");
+  // }
 }
