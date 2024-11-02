@@ -33,7 +33,11 @@ async function handleAuthSuccess(response: Response<CtAuthenticationResponse>){
   stateStore.authSuccessful = true
   stateStore.authErrorMessage = ''
   stateStore.setAuthData(response.data)
-  await persistConfiguration(configStore.ctUrl, configStore.ctToken)
+  if(stateStore.isInit){
+    stateStore.isInit = false
+  } else {
+    await persistConfiguration(configStore.ctUrl, configStore.ctToken)
+  }
 }
 
 function isResponseEmpty(response: Response<CtAuthenticationResponse>){
@@ -44,9 +48,6 @@ function isResponseEmpty(response: Response<CtAuthenticationResponse>){
 async function handleGroups(){
   const { data } = await fetchAllGroups()
   if(data.status === 'ok'){
-    console.log(data)
-    const groups = data.data
-    console.log("groups", groups)
     const stateStore = useStateStore()
     stateStore.groups = data.data as Group[]
   } else {
@@ -57,9 +58,6 @@ async function handleGroups(){
 async function handleGroupTypes(){
   const { data } = await fetchGroupTypes()
   if(data.status === 'ok'){
-    console.log(data)
-    const groupTypes = data.data
-    console.log("groupTypes", groupTypes)
     const stateStore = useStateStore()
     stateStore.groupTypes = data.data as GroupType[]
   } else {

@@ -4,32 +4,34 @@ import type { GroupType } from '@/models/requests/GroupType';
 import { defineStore } from "pinia";
 
 export interface StateStoreState {
-  shouldAuthenticate: boolean;
-  authWasExecuted: boolean;
-  authSuccessful: boolean;
   authErrorMessage: string;
-  userId: string;
-  userName: string;
-  userMail: string;
+  authSuccessful: boolean;
+  authWasExecuted: boolean;
+  groups: Group[];
+  groupTypes: GroupType[];
+  isInit: boolean;
   orgName: string;
   orgShortName: string;
-  groupTypes: GroupType[];
-  groups: Group[];
+  shouldAuthenticate: boolean;
+  userId: string;
+  userMail: string;
+  userName: string;
 }
 
 export const useStateStore = defineStore('state', {
   state: (): StateStoreState => ({
-    shouldAuthenticate: false,
-    authWasExecuted: false,
-    authSuccessful: false,
     authErrorMessage: '',
-    userId: '',
-    userName: '',
-    userMail: '',
+    authSuccessful: false,
+    authWasExecuted: false,
+    groups: [],
+    groupTypes: [],
+    isInit: true,
     orgName: '',
     orgShortName: '',
-    groupTypes: [],
-    groups: [],
+    shouldAuthenticate: false,
+    userId: '',
+    userMail: '',
+    userName: '',
   }),
   actions: {
     setAuthData(data: CtAuthenticationResponse){
@@ -41,8 +43,9 @@ export const useStateStore = defineStore('state', {
     }
   },
   getters: {
-    getGroupsForType: (state) => {
-      return (groupTypeId: number) => state.groups.filter((group) => group.type === groupTypeId)
-    },
-  }
-})
+    getGroupsForType: (state) => (groupTypeId: number) => state.groups.filter((group) => group.type === groupTypeId),
+    getNonEmptyGroupTypes: (state) => state
+      .groupTypes
+      .filter(({id}) => state.groups.filter((group) => group.type === id).length > 0)
+  },
+});

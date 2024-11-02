@@ -30,8 +30,8 @@ class Admin implements ISettings
     $this->initialStateService->provideInitialState('configuration', [
       'ctUrl' => $this->appConfig->getAppValueString('ctUrl'),
       'ctToken' => $this->appConfig->getAppValueString('ctUserToken'),
-      'ctUserMail' => $this->appConfig->getAppValueString('ctUserMail'),
-      'ctSyncGroups' => $this->appConfig->getAppValueArray('ctSyncGroups') ?? '{}',
+      'groupSync' => $this->appConfig->getAppValueArray('groupSync'),
+      'groupFolderSync' => $this->appConfig->getAppValueArray('groupFolderSync'),
     ]);
     return new TemplateResponse(Application::APP_ID, 'adminSettings');
   }

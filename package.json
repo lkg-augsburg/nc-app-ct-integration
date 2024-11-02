@@ -12,6 +12,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev-build": "vite build --sourcemap inline --manifest",
     "build": "run-p type-check \"build-only {@}\" --",
     "postinstall": "npm run build",
     "preview": "vite preview",

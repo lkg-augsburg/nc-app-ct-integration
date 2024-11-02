@@ -22,7 +22,7 @@
     </Card>
   </ConfigSection>
   <ConfigSection title="Configuration" class="m-2">
-    <CtGroupType v-for="(groupType, index) in stateStore.groupTypes"
+    <CtGroupType v-for="(groupType, index) in sortedGroupTypes"
       :key="index"
       :title="groupType.name"
       :description="groupType.description"
@@ -47,5 +47,9 @@ const { authWasExecuted, authErrorMessage, authSuccessful } = storeToRefs(stateS
 
 const cardTitle = computed(() => `Authorization ${authSuccessful.value ? 'successful' : 'failed'}`)
 const cardType = computed(() => authSuccessful.value ? 'success' : 'danger')
+const sortedGroupTypes = computed(
+  () => [...stateStore.getNonEmptyGroupTypes]
+    .sort(({name: name1}, {name: name2}) => name1.localeCompare(name2))
+);
 
 </script>
