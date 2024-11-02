@@ -5,17 +5,21 @@
       'bg-green-50': groupSyncState
     }"
   >
-    <ToggleSwitch v-model="groupSyncState"
+    <ToggleSwitch
+      :model-value="groupSyncState"
       :label="labelGroupSync"
-    />
-    <ToggleSwitch v-model="groupFolderState"
+      @update:model-value="handleGroupSyncChange"
+      />
+    <ToggleSwitch
+      :model-value="groupFolderState"
       :label="labelGroupFolder"
       :disabled="groupFolderDisabledState"
+      @update:model-value="handleGroupFolderSyncChange"
     />
   </Card>
 </template>
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
 import Card from '@/components/card/card.vue';
 import ToggleSwitch from '@/components/forms/ToggleSwitch.vue';
 import { useConfigStore } from '@/stores/useConfigStore';
@@ -26,37 +30,35 @@ interface CtGroupProps {
   name: string;
 }
 
-const configStore = useConfigStore();
-const stateStore = useStateStore();
-const props = defineProps<CtGroupProps>();
-const groupSyncState = ref(
-  configStore.groupSync.includes(props.id) ||
-  configStore.groupTypeSync.includes(
-    stateStore.groups.find(({id}) => id === props.id)?.type || -1
-  )
-);
 const labelGroupSync = 'Group Sync';
-const groupFolderState = ref(
-  groupSyncState.value === true && 
-  (
-    configStore.groupFolderSync.includes(props.id) ||
-    configStore.groupTypeFolderSync.includes(
-      stateStore.groups.find(({id}) => id === props.id)?.type || -1
-    )
-  )
-);
-const groupFolderDisabledState = ref(groupSyncState.value === false);
 const labelGroupFolder = 'Group Folder';
 
-watch(groupSyncState, (isSync) => {
-  if(!isSync){
-    groupFolderState.value = false;
-  }
-  groupFolderDisabledState.value = !isSync;
-  configStore.setGroupSyncStatus(props.id, isSync);
-});
+const configStore = useConfigStore();
+const stateStore = useStateStore();
 
-watch(groupFolderState, (isSync) => {
-  configStore.setGroupFolderSyncStatus(props.id, isSync);
+const props = defineProps<CtGroupProps>();
+
+const groupSyncState = computed(() => {
+  const isGroupChecked = configStore.groupSync.includes(props.id);
+  const isGroupTypeChecked = configStore.groupTypeSync.includes(
+    stateStore.groups.find(({id}) => id === props.id)?.type || -1
+  );
+  return isGroupChecked || isGroupTypeChecked;
 });
+const groupFolderState = computed(() => {
+  const isGroupSync = groupSyncState.value === true;
+  const isGroupFolderChecked = configStore.groupFolderSync.includes(props.id);
+  const isGroupTypeFolderChecked = configStore.groupTypeFolderSync.includes(
+    stateStore.groups.find(({id}) => id === props.id)?.type || -1
+  );
+  return isGroupSync && (isGroupFolderChecked || isGroupTypeFolderChecked);
+});
+const groupFolderDisabledState = computed(() => groupSyncState.value === false);
+
+function handleGroupSyncChange(isSync: boolean){
+  configStore.setGroupSyncStatus(props.id, isSync);
+}
+function handleGroupFolderSyncChange(isSync: boolean){
+  configStore.setGroupFolderSyncStatus(props.id, isSync);
+}
 </script>
