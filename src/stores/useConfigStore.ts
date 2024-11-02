@@ -26,6 +26,9 @@ export const useConfigStore = defineStore('config', {
       }
     )
   }),
+  getters: {
+    hasAuth: state => state.ctUrl.length > 10 && state.ctToken.length !== 0
+  },
   actions: {
     setGroupSyncStatus(groupId: number, isSync: boolean){
       const exists = this.groupSync.includes(groupId);
