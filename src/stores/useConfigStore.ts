@@ -6,7 +6,9 @@ export interface ConfigStoreState {
   ctUrl: string;
   ctToken: string;
   groupSync: number[];
+  groupTypeSync: number[];
   groupFolderSync: number[];
+  groupTypeFolderSync: number[];
 }
 
 export const useConfigStore = defineStore('config', {
@@ -18,7 +20,9 @@ export const useConfigStore = defineStore('config', {
         ctUrl: '',
         ctToken: '',
         groupSync: [],
+        groupTypeSync: [],
         groupFolderSync: [],
+        groupTypeFolderSync: [],
       }
     )
   }),
@@ -28,7 +32,7 @@ export const useConfigStore = defineStore('config', {
       const addGroup = isSync && !exists;
       const removeGroup = !isSync && exists;
       if(addGroup){
-        this.groupSync.push(groupId);
+        this.groupSync = [...this.groupSync, groupId].sort();
       }
       if (removeGroup) {
         this.groupSync = this.groupSync.filter(id => id !== groupId);
@@ -39,7 +43,7 @@ export const useConfigStore = defineStore('config', {
       const addGroup = isSync && !exists;
       const removeGroup = !isSync && exists;
       if(addGroup){
-        this.groupFolderSync.push(groupId);
+        this.groupFolderSync = [...this.groupFolderSync, groupId].sort();
       }
       if (removeGroup) {
         this.groupFolderSync = this.groupFolderSync.filter(id => id !== groupId);

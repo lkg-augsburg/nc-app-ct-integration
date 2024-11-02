@@ -2,6 +2,7 @@ import { createPinia } from 'pinia'
 import { useConfigStore } from '../stores/useConfigStore'
 import type { DebuggerEvent } from 'vue'
 import { useStateStore } from '../stores/useStateStore'
+import { persistConfiguration } from '@/services/config-service'
 
 const pinia = createPinia()
 const configStore = useConfigStore(pinia)
@@ -19,6 +20,10 @@ configStore.$subscribe(async (evt, state) => {
     && state.ctToken.length !== 0
   ){
     stateStore.shouldAuthenticate = true
+  } else if (!["ctToken", "ctUrl"].includes(key) && newValue !== oldValue) {
+    persistConfiguration({
+      [key]: newValue
+    });
   }
 })
 

@@ -31,7 +31,9 @@ class Admin implements ISettings
       'ctUrl' => $this->appConfig->getAppValueString('ctUrl'),
       'ctToken' => $this->appConfig->getAppValueString('ctUserToken'),
       'groupSync' => $this->appConfig->getAppValueArray('groupSync'),
+      'groupTypeSync' => $this->appConfig->getAppValueArray('groupTypeSync'),
       'groupFolderSync' => $this->appConfig->getAppValueArray('groupFolderSync'),
+      'groupTypeFolderSync' => $this->appConfig->getAppValueArray('groupTypeFolderSync'),
     ]);
     return new TemplateResponse(Application::APP_ID, 'adminSettings');
   }

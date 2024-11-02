@@ -36,7 +36,10 @@ async function handleAuthSuccess(response: Response<CtAuthenticationResponse>){
   if(stateStore.isInit){
     stateStore.isInit = false
   } else {
-    await persistConfiguration(configStore.ctUrl, configStore.ctToken)
+    await persistConfiguration({
+      ctUrl: configStore.ctUrl,
+      ctToken: configStore.ctToken,
+    })
   }
 }
 

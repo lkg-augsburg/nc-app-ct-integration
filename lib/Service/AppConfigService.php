@@ -37,20 +37,44 @@ class AppConfigService
     return $this->appConfig->setAppValueString("ctUserToken", $value);
   }
 
-  public function getCtSyncGroups(bool $grouped = false)
+  public function getGroupSync()
   {
-    $syncGroups = $this->appConfig->getAppValueArray("ctSyncGroups");
-
-    if($grouped){
-      return $syncGroups;
-    }
-
-    return array_merge(...array_values($syncGroups));
+    return $this->appConfig->getAppValueArray("groupSync");
   }
 
-  public function setCtSyncGroups(array $value)
+  public function setGroupSync(array $value)
   {
-    return $this->appConfig->setAppValueArray("ctSyncGroups", $value);
+    return $this->appConfig->setAppValueArray("groupSync", $value);
+  }
+
+  public function getGroupTypeSync()
+  {
+    return $this->appConfig->getAppValueArray("groupTypeSync");
+  }
+
+  public function setGroupTypeSync(array $value)
+  {
+    return $this->appConfig->setAppValueArray("groupTypeSync", $value);
+  }
+
+  public function getGroupFolderSync()
+  {
+    return $this->appConfig->getAppValueArray("groupFolderSync");
+  }
+
+  public function setGroupFolderSync(array $value)
+  {
+    return $this->appConfig->setAppValueArray("groupFolderSync", $value);
+  }
+
+  public function getGroupTypeFolderSync()
+  {
+    return $this->appConfig->getAppValueArray("groupTypeFolderSync");
+  }
+
+  public function setGroupTypeFolderSync(array $value)
+  {
+    return $this->appConfig->setAppValueArray("groupTypeFolderSync", $value);
   }
 
 

@@ -19,6 +19,7 @@ import { ref, watch } from 'vue';
 import Card from '@/components/card/card.vue';
 import ToggleSwitch from '@/components/forms/ToggleSwitch.vue';
 import { useConfigStore } from '@/stores/useConfigStore';
+import { useStateStore } from '@/stores/useStateStore';
 
 interface CtGroupProps {
   id: number;
@@ -26,11 +27,25 @@ interface CtGroupProps {
 }
 
 const configStore = useConfigStore();
+const stateStore = useStateStore();
 const props = defineProps<CtGroupProps>();
-const groupSyncState = ref(false);
+const groupSyncState = ref(
+  configStore.groupSync.includes(props.id) ||
+  configStore.groupTypeSync.includes(
+    stateStore.groups.find(({id}) => id === props.id)?.type || -1
+  )
+);
 const labelGroupSync = 'Group Sync';
-const groupFolderState = ref(false);
-const groupFolderDisabledState = ref(true);
+const groupFolderState = ref(
+  groupSyncState.value === true && 
+  (
+    configStore.groupFolderSync.includes(props.id) ||
+    configStore.groupTypeFolderSync.includes(
+      stateStore.groups.find(({id}) => id === props.id)?.type || -1
+    )
+  )
+);
+const groupFolderDisabledState = ref(groupSyncState.value === false);
 const labelGroupFolder = 'Group Folder';
 
 watch(groupSyncState, (isSync) => {
@@ -38,14 +53,10 @@ watch(groupSyncState, (isSync) => {
     groupFolderState.value = false;
   }
   groupFolderDisabledState.value = !isSync;
-
-  console.log("[GROUP SYNC] ", props.id, props.name, isSync);
   configStore.setGroupSyncStatus(props.id, isSync);
-  
-})
+});
 
 watch(groupFolderState, (isSync) => {
-  console.log("[FOLDER SYNC]", props.id, props.name, isSync);
   configStore.setGroupFolderSyncStatus(props.id, isSync);
-})
+});
 </script>

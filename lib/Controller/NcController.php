@@ -41,16 +41,40 @@ class NcController extends Controller
     ]);
   }
 
-  public function saveConfiguration($url, $token){
-    // $urlUpdated = $this->appConfigService->setCtUrl($url);
-    // $this->appConfigService->setCtUserToken($token);
+  public function saveConfiguration(){
+    $requestBody = file_get_contents('php://input');
+    $config = json_decode($requestBody, true);
+
+    $respData = [];
+
+    foreach ($config as $key => $value) {
+      switch($key) {
+        case "ctUrl": 
+          $respData[$key] = $this->appConfigService->setCtUrl($value);
+          break;
+        case "ctToken": 
+          $respData[$key] = $this->appConfigService->setCtUserToken($value);
+          break;
+          case "groupSync";
+          $respData[$key] = $this->appConfigService->setGroupSync($value);
+          break;
+          case "groupTypeSync";
+          $respData[$key] = $this->appConfigService->setGroupTypeSync($value);
+          break;
+          case "groupFolderSync";
+          $respData[$key] = $this->appConfigService->setGroupFolderSync($value);
+          break;
+          case "groupTypeFolderSync";
+          $respData[$key] = $this->appConfigService->setGroupTypeFolderSync($value);
+          break;
+        default:
+          $respData[$key] = $value;
+      } 
+    }
 
     return $this->_buildResponse(
       status: 'ok',
-      data: [
-        'url' => $this->appConfigService->setCtUrl($url),
-        'token' => $this->appConfigService->setCtUserToken($token),
-      ]
+      data: $respData,
     );
   }
 

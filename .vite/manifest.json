@@ -1,0 +1,12 @@
+{
+  "src/adminSettings.ts": {
+    "file": "js/churchtoolsintegration-adminSettings.js",
+    "name": "adminSettings",
+    "src": "src/adminSettings.ts",
+    "isEntry": true
+  },
+  "style.css": {
+    "file": "css/churchtoolsintegration-adminSettings.css",
+    "src": "style.css"
+  }
+}
