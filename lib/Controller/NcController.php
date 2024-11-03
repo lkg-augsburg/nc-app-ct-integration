@@ -67,6 +67,9 @@ class NcController extends Controller
           case "groupTypeFolderSync";
           $respData[$key] = $this->appConfigService->setGroupTypeFolderSync($value);
           break;
+          case "deactivatedGroupTypes";
+          $respData[$key] = $this->appConfigService->setDeactivatedGroupTypes($value);
+          break;
         default:
           $respData[$key] = $value;
       } 

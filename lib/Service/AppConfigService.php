@@ -74,5 +74,15 @@ class AppConfigService
     return $this->appConfig->setAppValueArray("groupTypeFolderSync", $value);
   }
 
+  public function getDeactivatedGroupTypes()
+  {
+    return $this->appConfig->getAppValueArray("deactivatedGroupTypes");
+  }
+
+  public function setDeactivatedGroupTypes(array $value)
+  {
+    return $this->appConfig->setAppValueArray("deactivatedGroupTypes", $value);
+  }
+
 
 }

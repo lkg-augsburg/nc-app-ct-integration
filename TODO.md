@@ -1,8 +1,3 @@
-# Add deactivate group type 
-- Add button for deactivation
-- Add section at bottom for deactivated group types
-- Add button for activation
-
 # Add toggle group type sync & folder
 - Toggle all group syncs
 - Toggle all group folder syncs

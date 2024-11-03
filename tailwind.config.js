@@ -7,7 +7,7 @@ export default {
       colors: {
         'nc-main-bg': 'var(--color-main-background)',
         'nc-main-text': 'var(--color-main-text)',
-      }
+      },
     },
   },
   variants: {

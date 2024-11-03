@@ -34,6 +34,7 @@ class Admin implements ISettings
       'groupTypeSync' => $this->appConfig->getAppValueArray('groupTypeSync'),
       'groupFolderSync' => $this->appConfig->getAppValueArray('groupFolderSync'),
       'groupTypeFolderSync' => $this->appConfig->getAppValueArray('groupTypeFolderSync'),
+      'deactivatedGroupTypes' => $this->appConfig->getAppValueArray('deactivatedGroupTypes'),
     ]);
     return new TemplateResponse(Application::APP_ID, 'adminSettings');
   }

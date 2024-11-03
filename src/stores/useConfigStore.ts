@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { loadState } from '@nextcloud/initial-state'
 import { CT_APP_ID } from "@/constants";
+import { useStateStore } from "./useStateStore";
 
 export interface ConfigStoreState {
   ctUrl: string;
@@ -9,6 +10,7 @@ export interface ConfigStoreState {
   groupTypeSync: number[];
   groupFolderSync: number[];
   groupTypeFolderSync: number[];
+  deactivatedGroupTypes: number[];
 }
 
 export const useConfigStore = defineStore('config', {
@@ -23,6 +25,7 @@ export const useConfigStore = defineStore('config', {
         groupTypeSync: [],
         groupFolderSync: [],
         groupTypeFolderSync: [],
+        deactivatedGroupTypes: [],
       }
     )
   }),
@@ -50,6 +53,32 @@ export const useConfigStore = defineStore('config', {
       }
       if (removeGroup) {
         this.groupFolderSync = this.groupFolderSync.filter(id => id !== groupId);
+      }
+    },
+    activateGroupType(groupType: number){
+      if(this.deactivatedGroupTypes.includes(groupType)){
+        this.deactivatedGroupTypes = this.deactivatedGroupTypes.filter(id => id !== groupType);
+      }
+    },
+    deactivateGroupType(groupType: number){
+      const stateStore = useStateStore();
+      const groupTypeGroups = stateStore.groups.filter(({type}) => type === groupType).map(({id}) => id);
+  
+      if(!this.deactivatedGroupTypes.includes(groupType)){
+        this.deactivatedGroupTypes = [...this.deactivatedGroupTypes, groupType];
+      }
+  
+      if(this.groupTypeSync.includes(groupType)){
+        this.groupTypeSync = this.groupTypeSync.filter(id => id !== groupType);
+      }
+      if(this.groupTypeFolderSync.includes(groupType)){
+        this.groupTypeFolderSync = this.groupTypeFolderSync.filter(id => id !== groupType);
+      }
+      if(this.groupSync.find(id => groupTypeGroups.includes(id)) !== undefined){
+        this.groupSync = this.groupSync.filter(id => !groupTypeGroups.includes(id)); 
+      }
+      if(this.groupFolderSync.find(id => groupTypeGroups.includes(id)) !== undefined){
+        this.groupFolderSync = this.groupFolderSync.filter(id => !groupTypeGroups.includes(id));
       }
     }
   },

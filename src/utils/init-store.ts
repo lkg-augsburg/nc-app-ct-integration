@@ -8,22 +8,25 @@ const pinia = createPinia();
 const configStore = useConfigStore(pinia);
 const stateStore = useStateStore(pinia);
 
+const authStateKeys = ["ctToken", "ctUrl"];
+
 if(configStore.ctUrl?.length > 0 || configStore.ctToken?.length > 0) {
   stateStore.shouldAuthenticate = true;
 }
 
-configStore.$subscribe(async (evt) => {
+configStore.$subscribe(async (evt, state) => {
   const {key, newValue, oldValue} = (evt.events as DebuggerEvent)
   if(
-    ["ctToken", "ctUrl"].includes(key) && newValue !== oldValue
+    authStateKeys.includes(key) && newValue !== oldValue
     && configStore.hasAuth
   ){
     stateStore.shouldAuthenticate = true;
     stateStore.isInit = false;
-  } else if (!["ctToken", "ctUrl"].includes(key) && newValue !== oldValue) {
-    persistConfiguration({
-      [key]: newValue
-    });
+  } else if (!authStateKeys.includes(key) && newValue !== oldValue) {
+    
+    persistConfiguration(Object.fromEntries(
+      Object.entries(state).filter(([key]) => !authStateKeys.includes(key))
+    ));
   }
 });
 
