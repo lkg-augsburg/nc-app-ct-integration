@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-[2.25rem_1fr] gap-2 items-center"
+  <div class="flex flex-row items-center gap-2"
     :class="{
       'cursor-pointer': !disabled,
       'cursor-not-allowed': disabled,
@@ -9,7 +9,7 @@
     @mouseleave="isHover = false"
   >
     <div
-      class="relative align-middle cursor-pointer select-none"
+      class="relative inline-block align-middle cursor-pointer select-none"
       :class="[clzDotHeight, fieldWidth]"
       >
       <input
@@ -56,7 +56,7 @@
       ></div>
     </div>
     <div
-      class="select-none"
+      class="inline-block select-none"
       :class="{
         'cursor-pointer': !disabled,
         'cursor-not-allowed': disabled,
@@ -97,6 +97,7 @@ function handleClick(){
     return
   }
   internalValue.value = internalValue.value === 'true' ? 'false' : 'true' 
+  emit('update:modelValue', internalValue.value === 'true');
 }
 
 watch(
@@ -105,8 +106,4 @@ watch(
     internalValue.value = newVal ? 'true' : 'false';
   }
 );
-
-watch(internalValue, (newVal) => {
-  emit('update:modelValue', newVal === 'true');
-});
 </script>
