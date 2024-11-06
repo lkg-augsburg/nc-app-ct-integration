@@ -1,8 +1,3 @@
-# Add toggle group type sync & folder
-- Toggle all group syncs
-- Toggle all group folder syncs
-- Handle group toggle changes
-
 # Sync groups
 - Fetch CT Sync groups
 - Create / delete groups

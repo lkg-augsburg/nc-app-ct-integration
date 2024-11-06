@@ -55,19 +55,22 @@ class NcController extends Controller
         case "ctToken": 
           $respData[$key] = $this->appConfigService->setCtUserToken($value);
           break;
-          case "groupSync";
+        case "groupSync";
           $respData[$key] = $this->appConfigService->setGroupSync($value);
           break;
-          case "groupTypeSync";
-          $respData[$key] = $this->appConfigService->setGroupTypeSync($value);
-          break;
-          case "groupFolderSync";
+        case "groupFolderSync";
           $respData[$key] = $this->appConfigService->setGroupFolderSync($value);
           break;
-          case "groupTypeFolderSync";
+        case "groupTypeConfigurations";
+          $respData[$key] = $this->appConfigService->setGroupTypeConfigurations($value);
+          break;
+        case "groupTypeSync";
+          $respData[$key] = $this->appConfigService->setGroupTypeSync($value);
+          break;
+        case "groupTypeFolderSync";
           $respData[$key] = $this->appConfigService->setGroupTypeFolderSync($value);
           break;
-          case "deactivatedGroupTypes";
+        case "deactivatedGroupTypes";
           $respData[$key] = $this->appConfigService->setDeactivatedGroupTypes($value);
           break;
         default:

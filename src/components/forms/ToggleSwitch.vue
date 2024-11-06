@@ -79,7 +79,9 @@ const props = withDefaults(defineProps<ToggleSwitchProps>(), {
   disabled: false
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits<{
+  'update:modelValue': [value: boolean]
+}>();
 
 const internalValue = ref(props.modelValue ? 'true' : 'false');
 const isHover = ref(false);

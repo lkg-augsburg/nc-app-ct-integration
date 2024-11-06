@@ -7,9 +7,10 @@ export interface ConfigStoreState {
   ctUrl: string;
   ctToken: string;
   groupSync: number[];
-  // groupTypeSync: number[];
   groupFolderSync: number[];
-  // groupTypeFolderSync: number[];
+  groupTypeSync: number[];
+  groupTypeFolderSync: number[];
+  groupTypeConfigurations: number[];
   deactivatedGroupTypes: number[];
 }
 
@@ -23,6 +24,9 @@ export const useConfigStore = defineStore('config', {
         ctToken: '',
         groupSync: [],
         groupFolderSync: [],
+        groupTypeSync: [],
+        groupTypeFolderSync: [],
+        groupTypeConfigurations: [],
         deactivatedGroupTypes: [],
       }
     )
@@ -36,7 +40,9 @@ export const useConfigStore = defineStore('config', {
         .map(({id}) => state.groupSync.includes(id))
         .reduce((acc, val) => acc && val, true)
       ;
-    }
+    },
+    hasGroupTypeConfiguration: state => state.groupTypeConfigurations.length > 0,
+    hasDeactivatedGroupTypes: state => state.deactivatedGroupTypes.length > 0,
   },
   actions: {
     setGroupSyncStatus(groupId: number, isSync: boolean){
@@ -52,14 +58,14 @@ export const useConfigStore = defineStore('config', {
         this.setGroupFolderSyncStatus(groupId, isSync);
       }
     },
-    setGroupTypeSyncStatus(groupType: number, isSync: boolean){
+    setAllGroupTypeGroupsSyncStatus(groupType: number, isSync: boolean){
       const stateStore = useStateStore();
       const groups = stateStore.getGroupsForType(groupType).map(({id}) => id);
       if(isSync){
         this.groupSync = Array.from(new Set<number>([...this.groupSync, ...groups]));
       } else {
         this.groupSync = this.groupSync.filter(id => !groups.includes(id));
-        this.setGroupTypeFolderSyncStatus(groupType, isSync);
+        this.setAllGroupTypeGroupFolderSyncStatus(groupType, isSync);
       }
     },
     setGroupFolderSyncStatus(groupId: number, isSync: boolean){
@@ -75,14 +81,76 @@ export const useConfigStore = defineStore('config', {
         this.groupFolderSync = this.groupFolderSync.filter(id => id !== groupId);
       }
     },
-    setGroupTypeFolderSyncStatus(groupType: number, isSync: boolean){
+    setAllGroupTypeGroupFolderSyncStatus(groupType: number, isSync: boolean){
       const stateStore = useStateStore();
       const groups = stateStore.getGroupsForType(groupType).map(({id}) => id);
       if(isSync){
         this.groupFolderSync = [...this.groupFolderSync, ...groups];
-        this.setGroupTypeSyncStatus(groupType, isSync);
+        this.setAllGroupTypeGroupsSyncStatus(groupType, isSync);
       } else {
         this.groupFolderSync = this.groupFolderSync.filter(id => !groups.includes(id));
+      }
+    },
+    activateConfigureGroupType(groupType: number){
+      const stateStore = useStateStore();
+      const typeGroups = stateStore.getGroupsForType(groupType);
+      const isGroupTypeSync = !typeGroups
+        .map(({id}) => this.groupSync.includes(id))
+        .includes(false)
+      ;
+      console.log(groupType, isGroupTypeSync);
+      if(isGroupTypeSync){
+        this.groupTypeSync = Array.from(new Set([...this.groupTypeFolderSync, groupType]))
+      }
+      const isGroupTypeFolderSync = !typeGroups
+        .map(({id}) => this.groupFolderSync.includes(id))
+        .includes(false)
+      ;
+      console.log(groupType, isGroupTypeFolderSync);
+
+      if(isGroupTypeFolderSync){
+        this.groupTypeFolderSync = Array.from(new Set([...this.groupTypeFolderSync, groupType]))
+      }
+
+      this.setAllGroupTypeGroupsSyncStatus(groupType, false);
+      this.setAllGroupTypeGroupFolderSyncStatus(groupType, false);
+      this.groupTypeConfigurations =  Array.from(new Set([...this.groupTypeConfigurations, groupType]));
+    },
+    deactivateConfigureGroupType(groupType: number){
+      const isSyncActive = this.groupTypeSync.includes(groupType);
+      const isFolderSyncActive = this.groupTypeFolderSync.includes(groupType);
+
+      this.setAllGroupTypeGroupsSyncStatus(groupType, isSyncActive);
+      this.setAllGroupTypeGroupFolderSyncStatus(groupType, isFolderSyncActive);
+
+      this.groupTypeConfigurations = this.groupTypeConfigurations.filter(id => id !== groupType)
+      this.groupTypeSync = this.groupTypeSync.filter(id => id !== groupType)
+      this.groupTypeFolderSync = this.groupTypeFolderSync.filter(id => id !== groupType)
+    },
+    setGroupTypeSyncStatus(groupType: number, isSync: boolean){
+      const exists = this.groupTypeSync.includes(groupType);
+      const addGroup = isSync && !exists;
+      const removeGroup = !isSync && exists;
+
+      if(addGroup){
+        this.groupTypeSync = Array.from(new Set([...this.groupTypeSync, groupType]));
+      }
+      if (removeGroup) {
+        this.groupTypeSync = this.groupTypeSync.filter(id => id !== groupType);
+        this.setGroupTypeFolderSyncStatus(groupType, isSync);
+      }
+    },
+    setGroupTypeFolderSyncStatus(groupType: number, isSync: boolean){
+      const exists = this.groupTypeFolderSync.includes(groupType);
+      const addGroup = isSync && !exists;
+      const removeGroup = !isSync && exists;
+
+      if(addGroup){
+        this.groupTypeFolderSync = [...this.groupTypeFolderSync, groupType].sort();
+        this.setGroupTypeSyncStatus(groupType, isSync);
+      }
+      if (removeGroup) {
+        this.groupTypeFolderSync = this.groupTypeFolderSync.filter(id => id !== groupType);
       }
     },
     activateGroupType(groupType: number){

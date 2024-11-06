@@ -2,17 +2,21 @@
   <Card :title="`#${groupType} ${title}`" class="my-1">
     <div class="mb-4">{{ description }}</div>
     <div class="flex gap-4 mb-4">
-      <button class="!text-xs !font-normal !min-h-0 !px-2 !py-0" @click="handleDeactivateGroupType">Deactivate</button>
+      <Button @click="handleConfigureGroupType" size="small">Configure Group Type</Button>
+      <Button @click="handleDeactivateGroupType" size="small">Deactivate</Button>
+      <Button size="small">Button</Button>
+    </div>
+    <div class="flex gap-4 mb-4">
       <ToggleSwitch
         class="inline-block"
         :model-value="allGroupsSync"
-        label="Group Sync"
+        label="Toggle all Group Syncs"
         @update:model-value="handleAllGroupsSyncToggleSwitch"
         />
         <ToggleSwitch
         class="inline-block"
         :model-value="allGroupFoldersSync"
-        label="Group Folder Sync"
+        label="Toggle all Group Folder Syncs"
         @update:model-value="handleAllGroupFoldersSyncToggleSwitch"
         />
     </div>
@@ -32,6 +36,7 @@ import { useConfigStore } from '@/stores/useConfigStore';
 import Card from '@/components/card/card.vue';
 import ToggleSwitch from '../forms/ToggleSwitch.vue';
 import CtGroup from './CtGroup.vue';
+import Button from '../forms/Button.vue';
 
 interface CtGroupTypeProps {
   title: string;
@@ -52,7 +57,7 @@ const allGroupsSync = computed(() => {
   return configStore.allGroupSyncChecked(props.groupType);
 });
 function handleAllGroupsSyncToggleSwitch(){
-  configStore.setGroupTypeSyncStatus(props.groupType, !allGroupsSync.value);
+  configStore.setAllGroupTypeGroupsSyncStatus(props.groupType, !allGroupsSync.value);
 }
 const allGroupFoldersSync = computed(
   () => {
@@ -65,9 +70,12 @@ const allGroupFoldersSync = computed(
     }
   );
 function handleAllGroupFoldersSyncToggleSwitch(){
-  configStore.setGroupTypeFolderSyncStatus(props.groupType, !allGroupFoldersSync.value);
+  configStore.setAllGroupTypeGroupFolderSyncStatus(props.groupType, !allGroupFoldersSync.value);
 }
 
+function handleConfigureGroupType(){
+  configStore.activateConfigureGroupType(props.groupType);
+}
 function handleDeactivateGroupType(){
   configStore.deactivateGroupType(props.groupType);
 }

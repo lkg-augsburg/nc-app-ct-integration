@@ -43,6 +43,26 @@ class AppConfigService
   {
     return $this->appConfig->setAppValueArray("groupSync", $value);
   }
+  
+  public function getGroupFolderSync()
+  {
+    return $this->appConfig->getAppValueArray("groupFolderSync");
+  }
+  
+  public function setGroupFolderSync(array $value)
+  {
+    return $this->appConfig->setAppValueArray("groupFolderSync", $value);
+  }
+  
+  public function getGroupTypeConfigurations()
+  {
+    return $this->appConfig->getAppValueArray("groupTypeConfigurations");
+  }
+
+  public function setGroupTypeConfigurations(array $value)
+  {
+    return $this->appConfig->setAppValueArray("groupTypeConfigurations", $value);
+  }
 
   public function getGroupTypeSync()
   {
@@ -52,16 +72,6 @@ class AppConfigService
   public function setGroupTypeSync(array $value)
   {
     return $this->appConfig->setAppValueArray("groupTypeSync", $value);
-  }
-
-  public function getGroupFolderSync()
-  {
-    return $this->appConfig->getAppValueArray("groupFolderSync");
-  }
-
-  public function setGroupFolderSync(array $value)
-  {
-    return $this->appConfig->setAppValueArray("groupFolderSync", $value);
   }
 
   public function getGroupTypeFolderSync()
